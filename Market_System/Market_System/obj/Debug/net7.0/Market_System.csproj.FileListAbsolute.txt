@@ -13,3 +13,5 @@ C:\Users\BAKU\Desktop\Projects\Market_System\Market_System\obj\Debug\net7.0\refi
 C:\Users\BAKU\Desktop\Projects\Market_System\Market_System\obj\Debug\net7.0\Market_System.pdb
 C:\Users\BAKU\Desktop\Projects\Market_System\Market_System\obj\Debug\net7.0\Market_System.genruntimeconfig.cache
 C:\Users\BAKU\Desktop\Projects\Market_System\Market_System\obj\Debug\net7.0\ref\Market_System.dll
+C:\Users\BAKU\Desktop\Projects\Market_System\Market_System\bin\Debug\net7.0\ConsoleTables.dll
+C:\Users\BAKU\Desktop\Projects\Market_System\Market_System\obj\Debug\net7.0\Market_System.csproj.CopyComplete
