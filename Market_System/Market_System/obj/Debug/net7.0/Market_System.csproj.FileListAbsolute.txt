@@ -1,0 +1,15 @@
+C:\Users\BAKU\Desktop\Projects\Market_System\Market_System\bin\Debug\net7.0\Market_System.exe
+C:\Users\BAKU\Desktop\Projects\Market_System\Market_System\bin\Debug\net7.0\Market_System.deps.json
+C:\Users\BAKU\Desktop\Projects\Market_System\Market_System\bin\Debug\net7.0\Market_System.runtimeconfig.json
+C:\Users\BAKU\Desktop\Projects\Market_System\Market_System\bin\Debug\net7.0\Market_System.dll
+C:\Users\BAKU\Desktop\Projects\Market_System\Market_System\bin\Debug\net7.0\Market_System.pdb
+C:\Users\BAKU\Desktop\Projects\Market_System\Market_System\obj\Debug\net7.0\Market_System.csproj.AssemblyReference.cache
+C:\Users\BAKU\Desktop\Projects\Market_System\Market_System\obj\Debug\net7.0\Market_System.GeneratedMSBuildEditorConfig.editorconfig
+C:\Users\BAKU\Desktop\Projects\Market_System\Market_System\obj\Debug\net7.0\Market_System.AssemblyInfoInputs.cache
+C:\Users\BAKU\Desktop\Projects\Market_System\Market_System\obj\Debug\net7.0\Market_System.AssemblyInfo.cs
+C:\Users\BAKU\Desktop\Projects\Market_System\Market_System\obj\Debug\net7.0\Market_System.csproj.CoreCompileInputs.cache
+C:\Users\BAKU\Desktop\Projects\Market_System\Market_System\obj\Debug\net7.0\Market_System.dll
+C:\Users\BAKU\Desktop\Projects\Market_System\Market_System\obj\Debug\net7.0\refint\Market_System.dll
+C:\Users\BAKU\Desktop\Projects\Market_System\Market_System\obj\Debug\net7.0\Market_System.pdb
+C:\Users\BAKU\Desktop\Projects\Market_System\Market_System\obj\Debug\net7.0\Market_System.genruntimeconfig.cache
+C:\Users\BAKU\Desktop\Projects\Market_System\Market_System\obj\Debug\net7.0\ref\Market_System.dll
