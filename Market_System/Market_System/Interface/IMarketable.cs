@@ -10,9 +10,9 @@ namespace Market_System.Interface
     public interface IMarketable
     {
         public List<Product> ShowAllProducts();
-        public int AddProduct();
-        public void UpdateProduct(int id);
-        public void DeleteProduct(int id);
+        public int AddProduct(string name, int price, int number, string category);
+        public void UpdateProduct(string name, int number, int price, int productId);
+        public void RemoveProduct(int id);
         public void ShowProductByCategory(string category);
         public void ShowProductByPriceRange(decimal firstprice, decimal endprice);
         public void SearchProductsByName(string productname);

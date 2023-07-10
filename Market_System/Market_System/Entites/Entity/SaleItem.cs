@@ -12,7 +12,7 @@ namespace Market_System.Entites.Entity
         private static int counter;
         public SaleItem()
         {
-            ID = counter;
+            Id = counter;
             counter++;
         }
         public int Number { get; set; }

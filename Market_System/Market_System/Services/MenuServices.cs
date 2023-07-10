@@ -1,5 +1,6 @@
 ﻿using ConsoleTables;
 using Market_System.Entites.Entity;
+using Market_System.Entites.Enums;
 using System;
 using System.Collections.Generic;
 using System.ComponentModel;
@@ -29,15 +30,26 @@ namespace Market_System.Services
 
                 int price = int.Parse(Console.ReadLine());
 
+                Console.WriteLine("Write product's number");
+                
+                int number = int.Parse(Console.ReadLine());
+                
                 Console.WriteLine("Write product's category");
+
+                Console.WriteLine("----------------------");
+
+                foreach (var item in Enum.GetValues(typeof(Category)))
+                {
+                    Console.WriteLine(item);
+                }
+
+                Console.WriteLine("----------------------");
 
                 string category = Console.ReadLine();
 
-                Console.WriteLine("Write product's number");
+                int productid = marketService.AddProduct(name, price, number, category);
 
-                int number = int.Parse(Console.ReadLine());
-
-                //MarketService.Add();
+                Console.WriteLine($"Added {name} with ID :{productid}");
             }
             catch (Exception ex)
             {
@@ -52,7 +64,21 @@ namespace Market_System.Services
             {
                 Console.WriteLine("Write product's id");
 
-                //MarketService.Uptade();
+                int id = int.Parse(Console.ReadLine());
+
+                Console.WriteLine("Write product's name");
+
+                string name = Console.ReadLine();
+
+                Console.WriteLine("Write product's number");
+
+                int number = int.Parse(Console.ReadLine());
+
+                Console.WriteLine("Write product's price");
+
+                int price = int.Parse(Console.ReadLine());
+
+                marketService.UpdateProduct(name, number, price, id);
             }
             catch (Exception ex)
             {
@@ -67,7 +93,9 @@ namespace Market_System.Services
             {
                 Console.WriteLine("Write product's ID");
 
-                //MarketService.Remove();
+                int id = int.Parse(Console.ReadLine());
+
+                marketService.RemoveProduct(id);
             }
             catch (Exception ex)
             {
@@ -85,7 +113,7 @@ namespace Market_System.Services
                 var table = new ConsoleTable("Id", "Product's name",
                     "Product's price", "Product's category", "Product's number");
 
-                if (products.Count == default)
+                if (products.Count == 0)
                 {
                     Console.WriteLine("No product's yet");
 
@@ -94,11 +122,12 @@ namespace Market_System.Services
 
                 foreach (var item in products)
                 {
-                    table.AddRow(item.ID, item.ProductName,
-                        item.Price, item.Category, item.Number);
+                    table.AddRow(item.Id, item.ProductName,
+                        item.Price, item.category, item.Number);
                 }
 
                 table.Write();
+
             }
             catch (Exception ex)
             {
@@ -111,9 +140,17 @@ namespace Market_System.Services
         {
             try
             {
+                var table = new ConsoleTable("Id", "Product's name",
+                    "Product's price", "Product's category", "Product's number");
+
                 Console.WriteLine("Write category");
 
                 string category = Console.ReadLine();
+
+                marketService.SearchProductsByName(category);
+
+
+
             }
             catch (Exception ex)
             {
@@ -134,7 +171,7 @@ namespace Market_System.Services
 
                 decimal endAmount = decimal.Parse(Console.ReadLine());
 
-                //MarketService.ShowProductByAmount
+                marketService.ShowProductByPriceRange(startAmount, endAmount);
             }
             catch (Exception ex)
             {

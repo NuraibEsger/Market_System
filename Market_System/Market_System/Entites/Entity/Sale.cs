@@ -13,7 +13,7 @@ namespace Market_System.Entites.Entity
         private static int counter;
         public Sale()
         {
-            ID = counter;
+            Id = counter;
             counter++;
         }
         public DateTime Date { get; set; }

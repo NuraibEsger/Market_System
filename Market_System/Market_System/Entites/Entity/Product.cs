@@ -13,12 +13,12 @@ namespace Market_System.Entites.Entity
         private static int counter;
         public Product()
         {
-            ID = counter;
+            Id = counter;
             counter++;
         }
         public string ProductName { get; set; }
         public int Price { get; set; }
         public int Number { get; set; }
-        public Category Category { get; set; }
+        public Category category { get; set; }
     }
 }
