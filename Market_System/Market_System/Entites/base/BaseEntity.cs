@@ -6,7 +6,8 @@ using System.Threading.Tasks;
 
 namespace Market_System.Entites.Base
 {
-    internal class Base
+    public abstract class BaseEntity
     {
+        public int ID { get; set; }
     }
 }

@@ -6,8 +6,9 @@ using System.Threading.Tasks;
 
 namespace Market_System.Entites.Enums
 {
-    public Enum Category()
+    public enum Category 
     {
+        Fruit,
 
     }
 }
