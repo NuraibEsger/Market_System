@@ -9,6 +9,7 @@ namespace Market_System.Entites.Enums
     public enum Category 
     {
         Fruit,
+        Vegetable,
 
     }
 }

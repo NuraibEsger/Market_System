@@ -1,9 +1,11 @@
 ﻿using ConsoleTables;
+using Market_System.Entites.Entity;
 using System;
 using System.Collections.Generic;
 using System.ComponentModel;
 using System.Globalization;
 using System.Linq;
+using System.Security.Cryptography.X509Certificates;
 using System.Text;
 using System.Threading.Tasks;
 
@@ -59,7 +61,7 @@ namespace Market_System.Services
                 Console.WriteLine(ex.Message);
             }
         }
-        public static void MenuRemoveProduct() 
+        public static void MenuRemoveProduct()
         {
             try
             {
@@ -74,14 +76,29 @@ namespace Market_System.Services
                 Console.WriteLine(ex.Message);
             }
         }
-        public static void MenuShowAllProduct()
+        public static void MenuShowAllProducts()
         {
             try
             {
-                var table = new ConsoleTable("Id", "Product's name", "Product's price", 
-                    "Product's category", "Product's number");
+                var products = marketService.ShowAllProducts();
 
-                //MarketService.ShowAllProduct
+                var table = new ConsoleTable("Id", "Product's name",
+                    "Product's price", "Product's category", "Product's number");
+
+                if (products.Count == default)
+                {
+                    Console.WriteLine("No product's yet");
+
+                    return;
+                }
+
+                foreach (var item in products)
+                {
+                    table.AddRow(item.ID, item.ProductName,
+                        item.Price, item.Category, item.Number);
+                }
+
+                table.Write();
             }
             catch (Exception ex)
             {
@@ -90,19 +107,13 @@ namespace Market_System.Services
                 Console.WriteLine(ex.Message);
             }
         }
-        public static void MenuShowProductByDate()
+        public static void MenuShowProductByCategory()
         {
             try
             {
-                Console.WriteLine("Write startdate");
+                Console.WriteLine("Write category");
 
-                DateTime startDate = DateTime.ParseExact(Console.ReadLine(), "MM/dd/yyyy", CultureInfo.InvariantCulture);
-
-                Console.WriteLine("Write enddate");
-
-                DateTime endDate = DateTime.ParseExact(Console.ReadLine(), "MM/dd/yyyy", CultureInfo.InvariantCulture);
-
-                //MarketService.ShowProductByDate
+                string category = Console.ReadLine();
             }
             catch (Exception ex)
             {
@@ -111,7 +122,7 @@ namespace Market_System.Services
                 Console.WriteLine(ex.Message);
             }
         }
-        public static void MenuShowProductByAmount()
+        public static void MenuShowProductByPriceRange()
         {
             try
             {
@@ -132,13 +143,144 @@ namespace Market_System.Services
                 Console.WriteLine(ex.Message);
             }
         }
+        public static void MenuSearchProductsByName()
+        {
+            try
+            {
+
+            }
+            catch (Exception ex)
+            {
+                throw new Exception("Got a error. Let's try again.");
+
+                Console.WriteLine(ex.Message);
+            }
+        }
+
+        #endregion
+
+        #region Sale
+
+        public static void MenuAddSale()
+        {
+            try
+            {
+                Console.WriteLine("Write product's number");
+
+                int number = int.Parse(Console.ReadLine());
+
+                //marketService.AddSale
+            }
+            catch (Exception ex)
+            {
+                throw new Exception("Got a error. Let's try again.");
+
+                Console.WriteLine(ex.Message);
+            }
+        }
+        public static void MenuRemoveProductFromSale()
+        {
+            try
+            {
+                Console.WriteLine("Write product's name");
+
+                string name = Console.ReadLine();
+
+                Console.WriteLine("Write product's number");
+
+                int number = int.Parse(Console.ReadLine());
+
+                //marketService.RemoveProductFromSales();
+            }
+            catch (Exception ex)
+            {
+                throw new Exception("Got a error. Let's try again.");
+
+                Console.WriteLine(ex.Message);
+            }
+        }
+        public static void MenuRemoveSale()
+        {
+            try
+            {
+                Console.WriteLine("Write product's number");
+
+                int number = int.Parse(Console.ReadLine());
+
+                //
+            }
+            catch (Exception ex)
+            {
+                throw new Exception("Got a error. Let's try again.");
+
+                Console.WriteLine(ex.Message);
+            }
+        }
+        public static void MenuDisplayAllSales()
+        {
+            try
+            {
+                //marketService.DisplayAllSales();
+            }
+            catch (Exception ex)
+            {
+                throw new Exception("Got a error. Let's try again.");
+
+                Console.WriteLine(ex.Message);
+            }
+        }
+        public static void MenuDisplaySalesByDate()
+        {
+            try
+            {
+                Console.WriteLine("Write start date");
+
+                DateTime startDate = DateTime.ParseExact(Console.ReadLine(), "MM/dd/yyyy", CultureInfo.InvariantCulture);
+
+                Console.WriteLine("Write end date");
+
+                DateTime endDate = DateTime.ParseExact(Console.ReadLine(), "MM/dd/yyyy", CultureInfo.InvariantCulture);
+
+                //marketService.DisplaySalesbyDate();
+            }
+            catch (Exception ex)
+            {
+                throw new Exception("Got a error. Let's try again.");
+
+                Console.WriteLine(ex.Message);
+            }
+        }
+        public static void MenuDisplaySalesByPriceRange()
+        {
+            try
+            {
+                Console.WriteLine("Write start price");
+
+                decimal startPrice = decimal.Parse(Console.ReadLine());
+
+                Console.WriteLine("Write end price");
+
+                decimal endPrice = decimal.Parse(Console.ReadLine());
+
+                //marketService.DisplaySalesByPriceRange();
+            }
+            catch (Exception ex)
+            {
+                throw new Exception("Got a error. Let's try again.");
+
+                Console.WriteLine(ex.Message);
+            }
+        }
         public static void MenuDisplaySalesOnTheGivenDate()
         {
             try
             {
-                DateTime date = DateTime.ParseExact(Console.ReadLine(), "MM/dd/yyyy", CultureInfo.InvariantCulture);
+                Console.WriteLine("Write date");
 
-                //MarketService.DisplaySalesOnTheGivenDate
+                DateTime date = DateTime.ParseExact(Console.ReadLine(), 
+                    "MM/dd/yyyy", CultureInfo.InvariantCulture);
+
+                //marketService.DisplaySalesOnTheGivenDate();
             }
             catch (Exception ex)
             {
@@ -149,18 +291,21 @@ namespace Market_System.Services
         }
         public static void MenuDisplaySalesOnTheGivenNumber()
         {
-            Console.WriteLine("Write product ID");
+            try
+            {
+                Console.WriteLine("Write product's number");
 
-            int number = int.Parse(Console.ReadLine());
+                int number = int.Parse(Console.ReadLine());
 
-            //MarketService.DisplaySalesOnTheGivenNumber
+                //marketService.DisplaySalesOnTheGivenNumber();
+            }
+            catch (Exception ex)
+            {
+                throw new Exception("Got a error. Let's try again.");
+
+                Console.WriteLine(ex.Message);
+            }
         }
-
-        #endregion
-
-        #region Sale
-
-
 
         #endregion
     }

@@ -4,6 +4,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using ConsoleTables;
+using Market_System.Services;
 
 namespace Market_System.SubMenu
 {
@@ -49,21 +50,31 @@ namespace Market_System.SubMenu
                 switch (option)
                 {
                     case 1:
+                        MenuServices.MenuAddProduct();
                         break;
 
                     case 2:
+                        MenuServices.MenuUptadeProduct();
                         break;
 
                     case 3:
+                        MenuServices.MenuRemoveProduct();
                         break;
 
                     case 4:
+                        MenuServices.MenuShowAllProducts();
                         break;
 
                     case 5:
+                        MenuServices.MenuShowProductByCategory();
                         break;
 
                     case 6:
+                        MenuServices.MenuShowProductByPriceRange();
+                        break;
+
+                    case 7:
+                        MenuServices.MenuSearchProductsByName();
                         break;
 
                     case 0:
@@ -95,7 +106,7 @@ namespace Market_System.SubMenu
 
                 Console.WriteLine("5. Display sales by date");
 
-                Console.WriteLine("6. Display sales by amount");
+                Console.WriteLine("6. Display sales by price range");
 
                 Console.WriteLine("7. Display sales on the given date");
 
