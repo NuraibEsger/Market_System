@@ -130,9 +130,11 @@ namespace Market_System.SubMenu
                         break;
 
                     case 2:
+                        MenuServices.MenuRemoveProductFromSale();
                         break;
 
                     case 3:
+                        MenuServices.MenuRemoveSale();
                         break;
 
                     case 4:
@@ -140,9 +142,19 @@ namespace Market_System.SubMenu
                         break;
 
                     case 5:
+                        MenuServices.MenuDisplaySalesByDate();
                         break;
 
                     case 6:
+                        MenuServices.MenuDisplaySalesByPriceRange();
+                        break;
+
+                    case 7:
+                        MenuServices.MenuDisplaySalesOnTheGivenDate();
+                        break;
+
+                    case 8:
+                        MenuServices.MenuDisplaySalesOnTheGivenNumber();
                         break;
 
                     case 0:

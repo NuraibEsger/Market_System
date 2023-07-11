@@ -17,7 +17,7 @@ namespace Market_System.Entites.Entity
             counter++;
         }
         public DateTime Date { get; set; }
-        public int Price { get; set; }
+        public decimal Price { get; set; }
         public List<SaleItem> SaleItem { get; set; }
     }
 }

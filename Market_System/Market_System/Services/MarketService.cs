@@ -31,7 +31,7 @@ namespace Market_System.Services
         {
             return Products;
         }
-        public int AddProduct(string Name, int Price, int Number, string Category)
+        public int AddProduct(string Name, decimal Price, int Number, string Category)
         {
             if (string.IsNullOrWhiteSpace(Name))
             {
@@ -69,7 +69,7 @@ namespace Market_System.Services
 
             return newProduct.Id;
         }
-        public void UpdateProduct(string name, int number, int price, int productId)
+        public void UpdateProduct(string name, int number, decimal price, int productId)
         {
             var res = Products.FirstOrDefault(x => x.Id == productId);
 
@@ -98,17 +98,26 @@ namespace Market_System.Services
         {
             foreach (var item in Enum.GetValues(typeof(Category)))
             {
-                var search = Products.Find(item => item.category.ToString() == category);
+
+                var search = Products.Find(item => item.category.ToString().ToLower() == category.ToLower());
 
                 if (search == null)
                 {
                     throw new Exception("We couldn't find products");
                 }
+                var table = new ConsoleTable("Id", "Product's name",
+                "Product's price", "Product's category", "Product's number");
+
+                table.AddRow(search.Id, search.ProductName, search.Price, search.category, search.Number);
+
+                table.Write();
+
+                break;
             }
         }
-        public void ShowProductByPriceRange(decimal firstprice, decimal endprice)
+        public void ShowProductByPriceRange(decimal startprice, decimal endprice)
         {
-            var result = Products.Where(x => x.Price >= firstprice && x.Price <= endprice).ToList();
+            var result = Products.Where(x => x.Price >= startprice && x.Price <= endprice).ToList();
 
             if (result.Count > 0)
             {
@@ -128,12 +137,13 @@ namespace Market_System.Services
         }
         public void SearchProductsByName(string productname)
         {
-            var search = Products.Find(x => x.ProductName == productname);
+            var search = Products.Find(x => x.ProductName.ToLower().Trim() == productname.ToLower().Trim());
 
             if (search == null)
             {
                 throw new Exception("Product is not found");
             }
+
             Console.WriteLine("---------------------------------------------------------------------------------------");
 
             Console.WriteLine($"Product's id: {search.Id} | product's name: {search.ProductName}" +
@@ -150,24 +160,83 @@ namespace Market_System.Services
         {
             return Sales;
         }
-        public int AddSale(int id)
+        public int AddSale(int id, int quantity)
         {
             if (id < 0)
             {
-                throw new Exception("There is no product yet");
+                Console.WriteLine("Product's id is less than 0");
             }
-
-            var search = Products.Where(x => x.Id == id);
-
-            foreach (var item in search)
+            var search = Products.FirstOrDefault(x => x.Id == id);
+            if (search == null)
             {
-                Console.WriteLine($"Product's name: {item.ProductName} | product's price {item.Price} ");
+                Console.WriteLine("There is no product");
             }
-            var newSale = new SaleItem
+            var newSaleItem = new SaleItem
             {
-                Id = id,
+                Product = (Product)search,
+
+                Number = quantity
             };
+            var newSale = new Sale
+            {
+                Price = quantity * newSaleItem.Product.Price,
+                Date = DateTime.Now,
+            };
+            Sales.Add(newSale);
+
             return newSale.Id;
+        }
+
+        public void RemoveSale(int saleid)
+        {
+            var existingSale = Sales.FirstOrDefault(x => x.Id == saleid);
+
+            if (existingSale is null)
+            {
+                throw new Exception($"Sale with ID: {saleid} not found");
+            }
+
+            Sales = Sales.Where(x => x.Id != saleid).ToList();
+        }
+        public void DisplaySalesByDate(DateTime startdate, DateTime enddate)
+        {
+            var result = Sales.Where(x => x.Date >= startdate && x.Date <= enddate).ToList();
+
+            if (result.Count > 0)
+            {
+                Console.WriteLine("------------------------------");
+
+                foreach (var item in result)
+                {
+                    Console.WriteLine($"Id: {item.Id} | Price {item.Price} | Date {item.Date}");
+                }
+
+                Console.WriteLine("------------------------------");
+            }
+            else
+            {
+                throw new Exception("Sale is not found");
+            }
+        }
+        public void DisplaySalesByPriceRange(decimal startPrice, decimal endPrice)
+        {
+            var result = Sales.Where(x => x.Price >= startPrice && x.Price <= endPrice).ToList();
+
+            if (result.Count > 0)
+            {
+                Console.WriteLine("------------------------------");
+
+                foreach (var item in result)
+                {
+                    Console.WriteLine($"Id: {item.Id} | Price {item.Price} | Date {item.Date}");
+                }
+
+                Console.WriteLine("------------------------------");
+            }
+            else
+            {
+                throw new Exception("Sale is not found");
+            }
         }
 
         #endregion

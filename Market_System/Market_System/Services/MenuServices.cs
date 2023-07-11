@@ -29,7 +29,7 @@ namespace Market_System.Services
 
                 Console.WriteLine("Write product's price");
 
-                int price = int.Parse(Console.ReadLine());
+                decimal price = decimal.Parse(Console.ReadLine());
 
                 Console.WriteLine("Write product's number");
                 
@@ -54,8 +54,6 @@ namespace Market_System.Services
             }
             catch (Exception ex)
             {
-                throw new Exception("Got a error. Let's try again.");
-
                 Console.WriteLine(ex.Message);
             }
         }
@@ -77,14 +75,12 @@ namespace Market_System.Services
 
                 Console.WriteLine("Write product's price");
 
-                int price = int.Parse(Console.ReadLine());
+                decimal price = decimal.Parse(Console.ReadLine());
 
                 marketService.UpdateProduct(name, number, price, id);
             }
             catch (Exception ex)
             {
-                throw new Exception("Got a error. Let's try again.");
-
                 Console.WriteLine(ex.Message);
             }
         }
@@ -100,8 +96,6 @@ namespace Market_System.Services
             }
             catch (Exception ex)
             {
-                throw new Exception("Got a error. Let's try again.");
-
                 Console.WriteLine(ex.Message);
             }
         }
@@ -120,7 +114,7 @@ namespace Market_System.Services
 
                     return;
                 }
-
+                
                 foreach (var item in products)
                 {
                     table.AddRow(item.Id, item.ProductName,
@@ -132,8 +126,6 @@ namespace Market_System.Services
             }
             catch (Exception ex)
             {
-                throw new Exception("Got a error. Let's try again.");
-
                 Console.WriteLine(ex.Message);
             }
         }
@@ -145,12 +137,10 @@ namespace Market_System.Services
 
                 string category = Console.ReadLine();
 
-                marketService.SearchProductsByName(category);
+                marketService.ShowProductByCategory(category);
             }
             catch (Exception ex)
             {
-                throw new Exception("Got a error. Let's try again.");
-
                 Console.WriteLine(ex.Message);
             }
         }
@@ -187,8 +177,6 @@ namespace Market_System.Services
             }
             catch (Exception ex)
             {
-                throw new Exception("Got a error. Let's try again.");
-
                 Console.WriteLine(ex.Message);
             }
         }
@@ -204,16 +192,15 @@ namespace Market_System.Services
                 Console.WriteLine("Write product's id");
 
                 int id = int.Parse(Console.ReadLine());
-                
-                int saleid = marketService.AddSale(id);
 
-                Console.WriteLine($"Added sale with ID :{saleid}");
+                Console.WriteLine("Write product's number");
 
+                int number = int.Parse(Console.ReadLine());
+
+                marketService.AddSale(id, number);
             }
             catch (Exception ex)
             {
-                throw new Exception("Got a error. Let's try again.");
-
                 Console.WriteLine(ex.Message);
             }
         }
@@ -233,8 +220,6 @@ namespace Market_System.Services
             }
             catch (Exception ex)
             {
-                throw new Exception("Got a error. Let's try again.");
-
                 Console.WriteLine(ex.Message);
             }
         }
@@ -246,12 +231,10 @@ namespace Market_System.Services
 
                 int number = int.Parse(Console.ReadLine());
 
-                //
+                marketService.RemoveSale(number);
             }
             catch (Exception ex)
             {
-                throw new Exception("Got a error. Let's try again.");
-
                 Console.WriteLine(ex.Message);
             }
         }
@@ -279,8 +262,6 @@ namespace Market_System.Services
             }
             catch (Exception ex)
             {
-                throw new Exception("Got a error. Let's try again.");
-
                 Console.WriteLine(ex.Message);
             }
         }
@@ -288,20 +269,18 @@ namespace Market_System.Services
         {
             try
             {
-                Console.WriteLine("Write start date");
+                Console.WriteLine("Write start date with, (MM/dd/yyyy) ");
 
                 DateTime startDate = DateTime.ParseExact(Console.ReadLine(), "MM/dd/yyyy", CultureInfo.InvariantCulture);
 
-                Console.WriteLine("Write end date");
+                Console.WriteLine("Write end date wirh, (MM/dd/yyyy)");
 
                 DateTime endDate = DateTime.ParseExact(Console.ReadLine(), "MM/dd/yyyy", CultureInfo.InvariantCulture);
 
-                //marketService.DisplaySalesbyDate();
+                marketService.DisplaySalesByDate(startDate, endDate);
             }
             catch (Exception ex)
             {
-                throw new Exception("Got a error. Let's try again.");
-
                 Console.WriteLine(ex.Message);
             }
         }
@@ -317,12 +296,10 @@ namespace Market_System.Services
 
                 decimal endPrice = decimal.Parse(Console.ReadLine());
 
-                //marketService.DisplaySalesByPriceRange();
+                marketService.DisplaySalesByPriceRange(startPrice, endPrice);
             }
             catch (Exception ex)
             {
-                throw new Exception("Got a error. Let's try again.");
-
                 Console.WriteLine(ex.Message);
             }
         }
@@ -339,8 +316,6 @@ namespace Market_System.Services
             }
             catch (Exception ex)
             {
-                throw new Exception("Got a error. Let's try again.");
-
                 Console.WriteLine(ex.Message);
             }
         }
@@ -356,8 +331,6 @@ namespace Market_System.Services
             }
             catch (Exception ex)
             {
-                throw new Exception("Got a error. Let's try again.");
-
                 Console.WriteLine(ex.Message);
             }
         }
