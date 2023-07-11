@@ -307,12 +307,12 @@ namespace Market_System.Services
         {
             try
             {
-                Console.WriteLine("Write date");
+                Console.WriteLine("Write date with, (MM/dd/yyyy)");
 
                 DateTime date = DateTime.ParseExact(Console.ReadLine(), 
                     "MM/dd/yyyy", CultureInfo.InvariantCulture);
 
-                //marketService.DisplaySalesOnTheGivenDate();
+                marketService.DisplaySalesOnTheGivenDate(date);
             }
             catch (Exception ex)
             {

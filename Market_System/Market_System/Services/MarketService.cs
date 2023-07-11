@@ -96,24 +96,32 @@ namespace Market_System.Services
         }
         public void ShowProductByCategory(string category)
         {
+            var list = new List<Product>();
+
             foreach (var item in Enum.GetValues(typeof(Category)))
             {
+                var search = Products.Where(x => x.category.ToString().ToLower() == category.ToLower());
 
-                var search = Products.Find(item => item.category.ToString().ToLower() == category.ToLower());
+                list.AddRange(search);
 
-                if (search == null)
-                {
-                    throw new Exception("We couldn't find products");
-                }
-                var table = new ConsoleTable("Id", "Product's name",
-                "Product's price", "Product's category", "Product's number");
-
-                table.AddRow(search.Id, search.ProductName, search.Price, search.category, search.Number);
-
-                table.Write();
-
-                break;
+                var res = list.GroupBy(x => x.ProductName).Select(x => x.First()).ToList();
             }
+            if (list.Count == 0)
+            {
+                Console.WriteLine("Didn't find");
+            }
+            var newRes = list.GroupBy(x => x.ProductName).Select(x => x.First()).ToList();
+
+            var table = new ConsoleTable("Id", "Product's name",
+                   "Product's price", "Product's category", "Product's number");
+
+            foreach (var item in newRes)
+            {
+                table.AddRow(item.Id, item.ProductName, item.Price, item.category, item.Number);
+            }
+
+            table.Write();
+
         }
         public void ShowProductByPriceRange(decimal startprice, decimal endprice)
         {
@@ -143,13 +151,13 @@ namespace Market_System.Services
             {
                 throw new Exception("Product is not found");
             }
+            var table = new ConsoleTable("Id", "Product's name",
+                    "Product's price", "Product's category", "Product's number");
 
-            Console.WriteLine("---------------------------------------------------------------------------------------");
+            table.AddRow(search.Id, search.ProductName, search.Price, search.category, search.Number);
 
-            Console.WriteLine($"Product's id: {search.Id} | product's name: {search.ProductName}" +
-                $" | product's category {search.category} | product's number {search.Number}");
+            table.Write();
 
-            Console.WriteLine("---------------------------------------------------------------------------------------");
         }
 
         #endregion
@@ -180,7 +188,7 @@ namespace Market_System.Services
             var newSale = new Sale
             {
                 Price = quantity * newSaleItem.Product.Price,
-                Date = DateTime.Now,
+                Date = DateTime.Now.Date
             };
             Sales.Add(newSale);
 
@@ -236,6 +244,26 @@ namespace Market_System.Services
             else
             {
                 throw new Exception("Sale is not found");
+            }
+        }
+
+        public void DisplaySalesOnTheGivenDate(DateTime date)
+        {
+            
+            var result = Sales.FindAll(x => x.Date == date);
+
+            foreach (var item in result)
+            {
+                var table = new ConsoleTable("Id", "Price", "Date");
+
+                table.AddRow(item.Id, item.Price, item.Date);
+
+                table.Write();
+            }
+
+            if (result == null)
+            {
+                throw new Exception("Sale didn't find");
             }
         }
 
