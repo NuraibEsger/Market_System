@@ -94,8 +94,6 @@ namespace Market_System.SubMenu
 
             do
             {
-                Console.Clear();
-
                 Console.WriteLine("1. Add new sales");
 
                 Console.WriteLine("2. Rremove product from sales");
@@ -128,6 +126,7 @@ namespace Market_System.SubMenu
                 switch (option)
                 {
                     case 1:
+                        MenuServices.MenuAddSale();
                         break;
 
                     case 2:
@@ -137,6 +136,7 @@ namespace Market_System.SubMenu
                         break;
 
                     case 4:
+                        MenuServices.MenuDisplayAllSales();
                         break;
 
                     case 5:

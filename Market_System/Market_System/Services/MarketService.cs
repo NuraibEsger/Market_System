@@ -24,6 +24,9 @@ namespace Market_System.Services
             Sales = new();
             SalesItems = new();
         }
+
+        #region Product
+
         public List<Product> ShowAllProducts()
         {
             return Products;
@@ -46,7 +49,7 @@ namespace Market_System.Services
             {
                 throw new FormatException("Category is empty!");
             }
-            
+
             bool isSuccessful = Enum.TryParse(typeof(Category), Category, true, out object parsedCategory);
 
             if (!isSuccessful)
@@ -93,8 +96,6 @@ namespace Market_System.Services
         }
         public void ShowProductByCategory(string category)
         {
-
-            
             foreach (var item in Enum.GetValues(typeof(Category)))
             {
                 var search = Products.Find(item => item.category.ToString() == category);
@@ -107,14 +108,18 @@ namespace Market_System.Services
         }
         public void ShowProductByPriceRange(decimal firstprice, decimal endprice)
         {
-            var result = Products.Where(x => x.Price>= firstprice && x.Price <= endprice).ToList();
+            var result = Products.Where(x => x.Price >= firstprice && x.Price <= endprice).ToList();
 
             if (result.Count > 0)
             {
+                Console.WriteLine("-------------------------------------");
+
                 foreach (var item in result)
                 {
                     Console.WriteLine($"Id: {item.Id} Name: {item.ProductName} Price: {item.Price}");
                 }
+
+                Console.WriteLine("-------------------------------------");
             }
             else
             {
@@ -123,7 +128,48 @@ namespace Market_System.Services
         }
         public void SearchProductsByName(string productname)
         {
+            var search = Products.Find(x => x.ProductName == productname);
 
+            if (search == null)
+            {
+                throw new Exception("Product is not found");
+            }
+            Console.WriteLine("---------------------------------------------------------------------------------------");
+
+            Console.WriteLine($"Product's id: {search.Id} | product's name: {search.ProductName}" +
+                $" | product's category {search.category} | product's number {search.Number}");
+
+            Console.WriteLine("---------------------------------------------------------------------------------------");
         }
+
+        #endregion
+
+        #region Sale
+
+        public List<Sale> ShowAllSales()
+        {
+            return Sales;
+        }
+        public int AddSale(int id)
+        {
+            if (id < 0)
+            {
+                throw new Exception("There is no product yet");
+            }
+
+            var search = Products.Where(x => x.Id == id);
+
+            foreach (var item in search)
+            {
+                Console.WriteLine($"Product's name: {item.ProductName} | product's price {item.Price} ");
+            }
+            var newSale = new SaleItem
+            {
+                Id = id,
+            };
+            return newSale.Id;
+        }
+
+        #endregion
     }
 }

@@ -9,6 +9,7 @@ using System.Linq;
 using System.Security.Cryptography.X509Certificates;
 using System.Text;
 using System.Threading.Tasks;
+using System.Xml.Linq;
 
 namespace Market_System.Services
 {
@@ -140,17 +141,11 @@ namespace Market_System.Services
         {
             try
             {
-                var table = new ConsoleTable("Id", "Product's name",
-                    "Product's price", "Product's category", "Product's number");
-
                 Console.WriteLine("Write category");
 
                 string category = Console.ReadLine();
 
                 marketService.SearchProductsByName(category);
-
-
-
             }
             catch (Exception ex)
             {
@@ -184,7 +179,11 @@ namespace Market_System.Services
         {
             try
             {
+                Console.WriteLine("Write product's name");
 
+                string name = Console.ReadLine();
+
+                marketService.SearchProductsByName(name);
             }
             catch (Exception ex)
             {
@@ -202,11 +201,14 @@ namespace Market_System.Services
         {
             try
             {
-                Console.WriteLine("Write product's number");
+                Console.WriteLine("Write product's id");
 
-                int number = int.Parse(Console.ReadLine());
+                int id = int.Parse(Console.ReadLine());
+                
+                int saleid = marketService.AddSale(id);
 
-                //marketService.AddSale
+                Console.WriteLine($"Added sale with ID :{saleid}");
+
             }
             catch (Exception ex)
             {
@@ -257,7 +259,23 @@ namespace Market_System.Services
         {
             try
             {
-                //marketService.DisplayAllSales();
+                var sales = marketService.ShowAllSales();
+
+                var table = new ConsoleTable("Id", "Sale's price",
+                     "Sale's date");
+
+                if (sales.Count == 0)
+                {
+                    Console.WriteLine("No sale's yet");
+                    return;
+                }
+
+                foreach (var item in sales)
+                {
+                    table.AddRow(item.Id, item.Price, item.Date);
+                }
+
+                table.Write();
             }
             catch (Exception ex)
             {

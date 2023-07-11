@@ -14,8 +14,6 @@ namespace Market_System
 
             do
             {
-                Console.Clear();
-
                 Console.WriteLine("1. Operate on Product");
 
                 Console.WriteLine("2. Operate on Sales");
@@ -50,7 +48,7 @@ namespace Market_System
                         break;
 
                     default:
-                        Console.WriteLine("No such option!");
+                        Console.WriteLine("There is no such option!");
                         break;
                 }
             } while (option != 0);
