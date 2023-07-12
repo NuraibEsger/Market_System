@@ -32,9 +32,9 @@ namespace Market_System.Services
                 decimal price = decimal.Parse(Console.ReadLine());
 
                 Console.WriteLine("Write product's number");
-                
+
                 int number = int.Parse(Console.ReadLine());
-                
+
                 Console.WriteLine("Write product's category");
 
                 Console.WriteLine("----------------------");
@@ -114,7 +114,7 @@ namespace Market_System.Services
 
                     return;
                 }
-                
+
                 foreach (var item in products)
                 {
                     table.AddRow(item.Id, item.ProductName,
@@ -216,8 +216,10 @@ namespace Market_System.Services
 
                 int number = int.Parse(Console.ReadLine());
 
-                //marketService.RemoveProductFromSales();
+                marketService.RemoveProductFromSale(number, name);
             }
+
+
             catch (Exception ex)
             {
                 Console.WriteLine(ex.Message);
@@ -309,7 +311,7 @@ namespace Market_System.Services
             {
                 Console.WriteLine("Write date with, (MM/dd/yyyy)");
 
-                DateTime date = DateTime.ParseExact(Console.ReadLine(), 
+                DateTime date = DateTime.ParseExact(Console.ReadLine(),
                     "MM/dd/yyyy", CultureInfo.InvariantCulture);
 
                 marketService.DisplaySalesOnTheGivenDate(date);
@@ -327,7 +329,7 @@ namespace Market_System.Services
 
                 int number = int.Parse(Console.ReadLine());
 
-                //marketService.DisplaySalesOnTheGivenNumber();
+                marketService.DisplaySalesOnTheGivenNumber(number);
             }
             catch (Exception ex)
             {

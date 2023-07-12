@@ -8,16 +8,18 @@ using System.Text;
 using System.Threading.Channels;
 using System.Threading.Tasks;
 using ConsoleTables;
+using System.Xml.Linq;
+using static System.Runtime.InteropServices.JavaScript.JSType;
 
 namespace Market_System.Services
 {
     public class MarketService : IMarketable
     {
-        public List<Product> Products;
+        public static List<Product> Products;
 
-        public List<Sale> Sales;
+        public static List<Sale> Sales;
 
-        public List<SaleItem> SalesItems;
+        public static List<SaleItem> SalesItems;
         public MarketService()
         {
             Products = new();
@@ -174,27 +176,52 @@ namespace Market_System.Services
             {
                 Console.WriteLine("Product's id is less than 0");
             }
+
             var search = Products.FirstOrDefault(x => x.Id == id);
+
             if (search == null)
             {
                 Console.WriteLine("There is no product");
             }
+
             var newSaleItem = new SaleItem
             {
                 Product = (Product)search,
 
                 Number = quantity
             };
+
             var newSale = new Sale
             {
                 Price = quantity * newSaleItem.Product.Price,
+
                 Date = DateTime.Now.Date
             };
+
+            SalesItems.Add(newSaleItem);
+
             Sales.Add(newSale);
 
             return newSale.Id;
         }
+        public void RemoveProductFromSale(int saleitemnumber, string name)
+        {
+            var existingSaleItem = SalesItems.FirstOrDefault(x => x.Product.Number >= saleitemnumber );
 
+            var table = new ConsoleTable("Id", "Sale's price",
+                     "Sale's date");
+
+            if (existingSaleItem is null)
+            {
+                throw new Exception($"Saleitem with ID: {saleitemnumber} not found");
+            }
+
+            SalesItems = SalesItems.Where(x => x.Product.Number != saleitemnumber && x.Product.ProductName == name).ToList();
+
+            table.AddRow(existingSaleItem.Id, existingSaleItem.Product.ProductName, existingSaleItem.Number);
+
+            table.Write();
+        }
         public void RemoveSale(int saleid)
         {
             var existingSale = Sales.FirstOrDefault(x => x.Id == saleid);
@@ -208,18 +235,19 @@ namespace Market_System.Services
         }
         public void DisplaySalesByDate(DateTime startdate, DateTime enddate)
         {
-            var result = Sales.Where(x => x.Date >= startdate && x.Date <= enddate).ToList();
+            var result = Sales.FindAll(x => x.Date >= startdate && x.Date <= enddate).ToList();
 
             if (result.Count > 0)
             {
-                Console.WriteLine("------------------------------");
+                var table = new ConsoleTable("Id", "Sale's price",
+                     "Sale's date");
 
                 foreach (var item in result)
                 {
-                    Console.WriteLine($"Id: {item.Id} | Price {item.Price} | Date {item.Date}");
+                    table.AddRow(item.Id, item.Price, item.Date);
                 }
 
-                Console.WriteLine("------------------------------");
+                table.Write();
             }
             else
             {
@@ -228,29 +256,47 @@ namespace Market_System.Services
         }
         public void DisplaySalesByPriceRange(decimal startPrice, decimal endPrice)
         {
-            var result = Sales.Where(x => x.Price >= startPrice && x.Price <= endPrice).ToList();
+            var result = Sales.FindAll(x => x.Price >= startPrice && x.Price <= endPrice).ToList();
+
 
             if (result.Count > 0)
             {
-                Console.WriteLine("------------------------------");
+                var table = new ConsoleTable("Id", "Sale's price",
+                     "Sale's date");
 
                 foreach (var item in result)
                 {
-                    Console.WriteLine($"Id: {item.Id} | Price {item.Price} | Date {item.Date}");
+                    table.AddRow(item.Id, item.Price, item.Date);
                 }
 
-                Console.WriteLine("------------------------------");
+                table.Write();
             }
             else
             {
                 throw new Exception("Sale is not found");
             }
         }
-
         public void DisplaySalesOnTheGivenDate(DateTime date)
         {
-            
             var result = Sales.FindAll(x => x.Date == date);
+
+            foreach (var item in result)
+            {
+                var table = new ConsoleTable("Id", "Price", "Date");
+
+                table.AddRow(item.Id, item.Price, item.Date);
+
+                table.Write();
+            }
+
+            if (result == null)
+            {
+                throw new Exception("Sale didn't find");
+            }
+        }
+        public void DisplaySalesOnTheGivenNumber(int id)
+        {
+            var result = Sales.FindAll(x => x.Id == id);
 
             foreach (var item in result)
             {
