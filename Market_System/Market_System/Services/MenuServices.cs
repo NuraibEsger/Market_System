@@ -160,8 +160,6 @@ namespace Market_System.Services
             }
             catch (Exception ex)
             {
-                throw new Exception("Got a error. Let's try again.");
-
                 Console.WriteLine(ex.Message);
             }
         }
@@ -189,10 +187,6 @@ namespace Market_System.Services
         {
             try
             {
-                Console.WriteLine("Write Saleitem's count");
-
-                int count = int.Parse(Console.ReadLine());
-
                 Console.WriteLine("Write product's id");
 
                 int id = int.Parse(Console.ReadLine());
@@ -201,7 +195,7 @@ namespace Market_System.Services
 
                 int number = int.Parse(Console.ReadLine());
 
-                marketService.AddSale(id, count, number);
+                marketService.AddSale(id, number);
             }
             catch (Exception ex)
             {

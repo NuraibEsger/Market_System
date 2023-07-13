@@ -73,7 +73,7 @@ namespace Market_System.Services
             return newProduct.Id;
         }
         public void UpdateProduct(string name, int number, decimal price, int productId)
-        {
+        { 
             var res = Products.FirstOrDefault(x => x.Id == productId);
 
             if (res == null)
@@ -116,15 +116,14 @@ namespace Market_System.Services
             var newRes = list.GroupBy(x => x.ProductName).Select(x => x.First()).ToList();
 
             var table = new ConsoleTable("Id", "Product's name",
-                   "Product's price", "Product's category", "Product's number");
+                    "Product's price", "Product's category", "Product's number");
 
             foreach (var item in newRes)
             {
-                table.AddRow(item.Id, item.ProductName, item.Price, item.category, item.Number);
+                    table.AddRow(item.Id, item.ProductName, item.Price, item.category, item.Number);
             }
 
             table.Write();
-
         }
         public void ShowProductByPriceRange(decimal startprice, decimal endprice)
         {
@@ -132,14 +131,15 @@ namespace Market_System.Services
 
             if (result.Count > 0)
             {
-                Console.WriteLine("-------------------------------------");
+                var table = new ConsoleTable("Id", "Product's name",
+                    "Product's price", "Product's category", "Product's number");
 
                 foreach (var item in result)
                 {
-                    Console.WriteLine($"Id: {item.Id} Name: {item.ProductName} Price: {item.Price}");
+                    table.AddRow(item.Id, item.ProductName, item.Price, item.category, item.Number);
                 }
 
-                Console.WriteLine("-------------------------------------");
+                table.Write();
             }
             else
             {
@@ -171,16 +171,11 @@ namespace Market_System.Services
         {
             return Sales;
         }
-        public int AddSale(int id, int count, int quantity)
+        public int AddSale(int id, int quantity)
         {
             if (id < 0)
             {
                 Console.WriteLine("Product's id is less than 0");
-            }
-
-            if (count < 0)
-            {
-                Console.WriteLine("SaleItem's count is less than 0");
             }
 
             var search = Products.FirstOrDefault(x => x.Id == id);
@@ -192,7 +187,7 @@ namespace Market_System.Services
 
             var newSaleItem = new SaleItem
             {
-                Number = count,
+                Number = quantity,
 
                 Product = search,
             };
