@@ -10,6 +10,7 @@ using System.Threading.Tasks;
 using ConsoleTables;
 using System.Xml.Linq;
 using static System.Runtime.InteropServices.JavaScript.JSType;
+using System.Diagnostics;
 
 namespace Market_System.Services
 {
@@ -170,11 +171,16 @@ namespace Market_System.Services
         {
             return Sales;
         }
-        public int AddSale(int id, int quantity)
+        public int AddSale(int id, int count, int quantity)
         {
             if (id < 0)
             {
                 Console.WriteLine("Product's id is less than 0");
+            }
+
+            if (count < 0)
+            {
+                Console.WriteLine("SaleItem's count is less than 0");
             }
 
             var search = Products.FirstOrDefault(x => x.Id == id);
@@ -186,14 +192,16 @@ namespace Market_System.Services
 
             var newSaleItem = new SaleItem
             {
-                Product = (Product)search,
+                Number = count,
 
-                Number = quantity
+                Product = search,
             };
 
             var newSale = new Sale
             {
-                Price = quantity * newSaleItem.Product.Price,
+                Price = quantity * newSaleItem.Number,
+
+                SaleItem = new(),
 
                 Date = DateTime.Now.Date
             };
@@ -202,25 +210,23 @@ namespace Market_System.Services
 
             Sales.Add(newSale);
 
-            return newSale.Id;
+            return newSaleItem.Id;
         }
-        public void RemoveProductFromSale(int saleitemnumber, string name)
+        public void RemoveProductFromSale(int productId, string name)
         {
-            var existingSaleItem = SalesItems.FirstOrDefault(x => x.Product.Number >= saleitemnumber );
-
-            var table = new ConsoleTable("Id", "Sale's price",
-                     "Sale's date");
-
-            if (existingSaleItem is null)
+            SaleItem saleItem = SalesItems.FirstOrDefault(item => item.Product.Id == productId);
+            if (saleItem != null)
             {
-                throw new Exception($"Saleitem with ID: {saleitemnumber} not found");
+                SalesItems.Remove(saleItem);
+
+                saleItem.Product.ProductName = SalesItems.Sum(item => item.Product.Price * item.Number).ToString();
+            }
+            else
+            {
+                Console.WriteLine("Product not found in the sale.");
             }
 
-            SalesItems = SalesItems.Where(x => x.Product.Number != saleitemnumber && x.Product.ProductName == name).ToList();
-
-            table.AddRow(existingSaleItem.Id, existingSaleItem.Product.ProductName, existingSaleItem.Number);
-
-            table.Write();
+            SalesItems = SalesItems.Where(x => x.Id != productId).ToList();
         }
         public void RemoveSale(int saleid)
         {
@@ -294,18 +300,21 @@ namespace Market_System.Services
                 throw new Exception("Sale didn't find");
             }
         }
-        public void DisplaySalesOnTheGivenNumber(int id)
+        public void DisplaySalesOnTheGivenNumber(int id, string name)
         {
-            var result = Sales.FindAll(x => x.Id == id);
+            var result = Sales.FindAll(x => x.Id == id).ToList();
+
+            var table = new ConsoleTable("Id", "Price", "Date", "Name");
 
             foreach (var item in result)
             {
-                var table = new ConsoleTable("Id", "Price", "Date");
-
-                table.AddRow(item.Id, item.Price, item.Date);
-
-                table.Write();
+                foreach (var items in SalesItems)
+                {
+                    table.AddRow(item.Id, item.Price, item.Date, items.Product.ProductName);
+                }
             }
+
+            table.Write();
 
             if (result == null)
             {

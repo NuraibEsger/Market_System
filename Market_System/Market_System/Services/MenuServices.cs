@@ -189,6 +189,10 @@ namespace Market_System.Services
         {
             try
             {
+                Console.WriteLine("Write Saleitem's count");
+
+                int count = int.Parse(Console.ReadLine());
+
                 Console.WriteLine("Write product's id");
 
                 int id = int.Parse(Console.ReadLine());
@@ -197,7 +201,7 @@ namespace Market_System.Services
 
                 int number = int.Parse(Console.ReadLine());
 
-                marketService.AddSale(id, number);
+                marketService.AddSale(id, count, number);
             }
             catch (Exception ex)
             {
@@ -246,8 +250,7 @@ namespace Market_System.Services
             {
                 var sales = marketService.ShowAllSales();
 
-                var table = new ConsoleTable("Id", "Sale's price",
-                     "Sale's date");
+                var table = new ConsoleTable("Id", "Sale's date", "Saleitem's id", "Saleitem's price", "Saleitem's name");
 
                 if (sales.Count == 0)
                 {
@@ -255,9 +258,12 @@ namespace Market_System.Services
                     return;
                 }
 
-                foreach (var item in sales)
+                foreach (var sale in sales)
                 {
-                    table.AddRow(item.Id, item.Price, item.Date);
+                    foreach (var saleItem in MarketService.SalesItems)
+                    {
+                        table.AddRow(sale.Id, sale.Date, saleItem.Id, sale.Price, saleItem.Product.ProductName);
+                    }
                 }
 
                 table.Write();
@@ -329,7 +335,11 @@ namespace Market_System.Services
 
                 int number = int.Parse(Console.ReadLine());
 
-                marketService.DisplaySalesOnTheGivenNumber(number);
+                Console.WriteLine("Write product's name");
+
+                string name = Console.ReadLine();
+
+                marketService.DisplaySalesOnTheGivenNumber(number, name);
             }
             catch (Exception ex)
             {
