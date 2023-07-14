@@ -14,8 +14,6 @@ namespace Market_System.Entites.Entity
         {
             Id = counter;
             counter++;
-            Product.Number = new();
-            Product.Number -= Number;
         }
         public int Number { get; set; }
         public Product Product { get; set; }

@@ -37,14 +37,13 @@ namespace Market_System.Services
 
                 Console.WriteLine("Write product's category");
 
-                Console.WriteLine("----------------------");
+                var table = new ConsoleTable("----------");
 
                 foreach (var item in Enum.GetValues(typeof(Category)))
                 {
-                    Console.WriteLine(item);
+                    table.AddRow(item);
                 }
-
-                Console.WriteLine("----------------------");
+                table.Write();
 
                 string category = Console.ReadLine();
 
@@ -77,7 +76,7 @@ namespace Market_System.Services
 
                 decimal price = decimal.Parse(Console.ReadLine());
 
-                marketService.UpdateProduct(name, number, price, id);
+                marketService.UpdateProduct(id, name, number, price);
             }
             catch (Exception ex)
             {
@@ -244,7 +243,6 @@ namespace Market_System.Services
             {
                 var sales = marketService.ShowAllSales();
 
-                var table = new ConsoleTable("Id", "Sale's date", "Saleitem's id", "Saleitem's price", "Saleitem's name");
 
                 if (sales.Count == 0)
                 {
@@ -252,11 +250,19 @@ namespace Market_System.Services
                     return;
                 }
 
-                foreach (var sale in sales)
+                var res = sales.GroupBy(x => x.Id).Select(y => y.First()).ToList();
+
+                var table = new ConsoleTable("Sale's date", "Saleitem's id", "Saleitem's price", "Saleitem's name", "Product's stock");
+
+                foreach (var item in sales)
                 {
                     foreach (var saleItem in MarketService.SalesItems)
                     {
-                        table.AddRow(sale.Id, sale.Date, saleItem.Id, sale.Price, saleItem.Product.ProductName);
+                        if (item.Id == saleItem.Id)
+                        {
+                            table.AddRow(item.Date, saleItem.Id, item.Price, 
+                                saleItem.Product.ProductName, saleItem.Product.Number);
+                        }
                     }
                 }
 
@@ -333,7 +339,7 @@ namespace Market_System.Services
 
                 string name = Console.ReadLine();
 
-                marketService.DisplaySalesOnTheGivenNumber(number, name);
+                marketService.DisplaySalesOnTheGivenNumber(number);
             }
             catch (Exception ex)
             {

@@ -13,7 +13,7 @@ namespace Market_System.Interface
 
         public  List<Product> ShowAllProducts();
         public int AddProduct(string name, decimal price, int number, string category);
-        public void UpdateProduct(string name, int number, decimal price, int productId);
+        public void UpdateProduct(int productId, string name, int number, decimal price);
         public void RemoveProduct(int id);
         public void ShowProductByCategory(string category);
         public void ShowProductByPriceRange(decimal firstprice, decimal endprice);
@@ -29,7 +29,7 @@ namespace Market_System.Interface
         public void DisplaySalesByDate(DateTime startdate, DateTime enddate);
         public void DisplaySalesByPriceRange(decimal startPrice, decimal endPrice);
         public void DisplaySalesOnTheGivenDate(DateTime date);
-        public void DisplaySalesOnTheGivenNumber(int id, string name);
+        public void DisplaySalesOnTheGivenNumber(int id);
 
         #endregion
 

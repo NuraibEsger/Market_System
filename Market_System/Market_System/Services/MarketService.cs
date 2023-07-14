@@ -72,9 +72,24 @@ namespace Market_System.Services
 
             return newProduct.Id;
         }
-        public void UpdateProduct(string name, int number, decimal price, int productId)
+        public void UpdateProduct(int productId, string name, int number, decimal price)
         { 
             var res = Products.FirstOrDefault(x => x.Id == productId);
+
+            if (name is null)
+            {
+                Console.WriteLine("Product's name is null");
+            }
+
+            if (price <= 0)
+            {
+                Console.WriteLine("Price is equal or less than 0");
+            }
+
+            if (number <= 0)
+            {
+                Console.WriteLine("Number is equal or less than 0");
+            }
 
             if (res == null)
             {
@@ -112,6 +127,7 @@ namespace Market_System.Services
             if (list.Count == 0)
             {
                 Console.WriteLine("Didn't find");
+                return;
             }
             var newRes = list.GroupBy(x => x.ProductName).Select(x => x.First()).ToList();
 
@@ -187,16 +203,21 @@ namespace Market_System.Services
 
             var newSaleItem = new SaleItem
             {
-                Number = quantity,
+                Number = search.Number - quantity,
 
-                Product = search,
+                Product = search
             };
+
+            newSaleItem.Number = quantity;
+
+            if (search.Number <= 0)
+            {
+                Console.WriteLine("Wrong!");
+            }
 
             var newSale = new Sale
             {
-                Price = quantity * newSaleItem.Number,
-
-                SaleItem = new(),
+                Price = quantity * newSaleItem.Product.Number * newSaleItem.Product.Price,
 
                 Date = DateTime.Now.Date
             };
@@ -210,6 +231,7 @@ namespace Market_System.Services
         public void RemoveProductFromSale(int productId, string name)
         {
             SaleItem saleItem = SalesItems.FirstOrDefault(item => item.Product.Id == productId);
+
             if (saleItem != null)
             {
                 SalesItems.Remove(saleItem);
@@ -295,7 +317,7 @@ namespace Market_System.Services
                 throw new Exception("Sale didn't find");
             }
         }
-        public void DisplaySalesOnTheGivenNumber(int id, string name)
+        public void DisplaySalesOnTheGivenNumber(int id)
         {
             var result = Sales.FindAll(x => x.Id == id).ToList();
 
