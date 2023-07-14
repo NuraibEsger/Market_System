@@ -11,6 +11,7 @@ using ConsoleTables;
 using System.Xml.Linq;
 using static System.Runtime.InteropServices.JavaScript.JSType;
 using System.Diagnostics;
+using System.Security.Cryptography.X509Certificates;
 
 namespace Market_System.Services
 {
@@ -34,43 +35,53 @@ namespace Market_System.Services
         {
             return Products;
         }
-        public int AddProduct(string Name, decimal Price, int Number, string Category)
+        public void AddProduct(string Name, decimal Price, int Number, string Category)
         {
-            if (string.IsNullOrWhiteSpace(Name))
-            {
-                throw new FormatException("product's name is empty!");
-            }
-            if (Price < 0)
-            {
-                throw new FormatException("Price is less than zero");
-            }
-            if (Number <= 0)
-            {
-                throw new FormatException("Number is equal or lower than 0");
-            }
-            if (string.IsNullOrWhiteSpace(Category))
-            {
-                throw new FormatException("Category is empty!");
-            }
+            var res = Products.Find(x => x.ProductName == Name && x.Price == Price);
 
-            bool isSuccessful = Enum.TryParse(typeof(Category), Category, true, out object parsedCategory);
-
-            if (!isSuccessful)
+            if (res == null)
             {
-                throw new FormatException("Category not found");
+                if (string.IsNullOrWhiteSpace(Name))
+                {
+                    throw new FormatException("product's name is empty!");
+                }
+                if (Price < 0)
+                {
+                    throw new FormatException("Price is less than zero");
+                }
+                if (Number <= 0)
+                {
+                    throw new FormatException("Number is equal or lower than 0");
+                }
+                if (string.IsNullOrWhiteSpace(Category))
+                {
+                    throw new FormatException("Category is empty!");
+                }
+
+                bool isSuccessful = Enum.TryParse(typeof(Category), Category, true, out object parsedCategory);
+
+                if (!isSuccessful)
+                {
+                    throw new FormatException("Category not found");
+                }
+
+                var newProduct = new Product
+                {
+                    ProductName = Name,
+                    Price = Price,
+                    Number = Number,
+                    category = (Category)parsedCategory,
+                };
+
+                Products.Add(newProduct);
+
+                Console.WriteLine(newProduct.Id);
             }
-
-            var newProduct = new Product
+            else
             {
-                ProductName = Name,
-                Price = Price,
-                Number = Number,
-                category = (Category)parsedCategory,
-            };
-
-            Products.Add(newProduct);
-
-            return newProduct.Id;
+                res.Number += Number;
+            }
+            
         }
         public void UpdateProduct(int productId, string name, int number, decimal price)
         { 
@@ -217,7 +228,7 @@ namespace Market_System.Services
 
             var newSale = new Sale
             {
-                Price = quantity * newSaleItem.Product.Number * newSaleItem.Product.Price,
+                Price = quantity * newSaleItem.Product.Price,
 
                 Date = DateTime.Now.Date
             };
@@ -226,31 +237,38 @@ namespace Market_System.Services
 
             Sales.Add(newSale);
 
-            search.Number -= quantity;
-
             if (quantity > search.Number)
             {
                 Console.WriteLine("Stock number is less than number");
             }
 
+            search.Number -= quantity;
+
             return newSaleItem.Id;
         }
-        public void RemoveProductFromSale(int productId, string name)
+        public void RemoveProductFromSale(string name, int quantity)
         {
-            SaleItem saleItem = SalesItems.FirstOrDefault(item => item.Product.Id == productId);
+            var saleItem = SalesItems.FirstOrDefault(item => item.Product.ProductName == name);
 
             if (saleItem != null)
             {
-                SalesItems.Remove(saleItem);
+                if (saleItem.Product.Number == 0)
+                {
+                    SalesItems.Remove(saleItem);
+                }
+                foreach (var item in Sales)
+                {
+                    item.Price = item.Price - (quantity * saleItem.Product.Price);
 
-                saleItem.Product.ProductName = SalesItems.Sum(item => item.Product.Price * item.Number).ToString();
-            }
-            else
-            {
-                Console.WriteLine("Product not found in the sale.");
-            }
+                    if (item.Price <= 0)
+                    {
+                        Console.WriteLine("Saleitem is empty");
 
-            SalesItems = SalesItems.Where(x => x.Id != productId).ToList();
+                        return;
+                    }
+                }
+                saleItem.Product.Number += quantity;
+            }
         }
         public void RemoveSale(int saleid)
         {

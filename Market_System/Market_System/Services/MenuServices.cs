@@ -47,9 +47,12 @@ namespace Market_System.Services
 
                 string category = Console.ReadLine();
 
-                int productid = marketService.AddProduct(name, price, number, category);
+                marketService.AddProduct(name, price, number, category);
 
-                Console.WriteLine($"Added {name} with ID :{productid}");
+                foreach (var item in MarketService.Products)
+                {
+                    Console.WriteLine($"Added {name} with ID :{item.Id}");
+                }
             }
             catch (Exception ex)
             {
@@ -213,10 +216,8 @@ namespace Market_System.Services
 
                 int number = int.Parse(Console.ReadLine());
 
-                marketService.RemoveProductFromSale(number, name);
+                marketService.RemoveProductFromSale(name, number);
             }
-
-
             catch (Exception ex)
             {
                 Console.WriteLine(ex.Message);
@@ -247,6 +248,7 @@ namespace Market_System.Services
                 if (sales.Count == 0)
                 {
                     Console.WriteLine("No sale's yet");
+
                     return;
                 }
 
