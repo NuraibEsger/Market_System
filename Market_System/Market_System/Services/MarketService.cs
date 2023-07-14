@@ -12,6 +12,7 @@ using System.Xml.Linq;
 using static System.Runtime.InteropServices.JavaScript.JSType;
 using System.Diagnostics;
 using System.Security.Cryptography.X509Certificates;
+using System.Collections.Immutable;
 
 namespace Market_System.Services
 {
@@ -73,6 +74,11 @@ namespace Market_System.Services
                     category = (Category)parsedCategory,
                 };
 
+                if (newProduct.Number < 0)
+                {
+                    throw new Exception("empty");
+                }
+
                 Products.Add(newProduct);
 
                 Console.WriteLine(newProduct.Id);
@@ -81,10 +87,10 @@ namespace Market_System.Services
             {
                 res.Number += Number;
             }
-            
+
         }
         public void UpdateProduct(int productId, string name, int number, decimal price)
-        { 
+        {
             var res = Products.FirstOrDefault(x => x.Id == productId);
 
             if (name is null)
@@ -147,7 +153,7 @@ namespace Market_System.Services
 
             foreach (var item in newRes)
             {
-                    table.AddRow(item.Id, item.ProductName, item.Price, item.category, item.Number);
+                table.AddRow(item.Id, item.ProductName, item.Price, item.category, item.Number);
             }
 
             table.Write();
@@ -198,53 +204,76 @@ namespace Market_System.Services
         {
             return Sales;
         }
-        public int AddSale(int id, int quantity)
+        public void AddSale(int id, int quantity)
         {
-            if (id < 0)
+            var res = SalesItems.Find(x => x.Id == id);
+
+            if (res == null)
             {
-                Console.WriteLine("Product's id is less than 0");
+                if (id < 0)
+                {
+                    Console.WriteLine("Product's id is less than 0");
+                }
+
+                var search = Products.FirstOrDefault(x => x.Id == id);
+
+                if (search == null)
+                {
+                    Console.WriteLine("There is no product");
+                }
+
+                if (quantity > search.Number)
+                {
+                    throw new Exception("Stock is less than 0");
+                }
+
+                var newSaleItem = new SaleItem
+                {
+                    Number = search.Number - quantity,
+
+                    Product = search
+                };
+
+                newSaleItem.Number = quantity;
+
+                if (search.Number <= 0)
+                {
+                    Console.WriteLine("Wrong!");
+                }
+
+                var newSale = new Sale
+                {
+                    Price = quantity * newSaleItem.Product.Price,
+
+                    Date = DateTime.Now.Date
+                };
+
+                SalesItems.Add(newSaleItem);
+
+                Sales.Add(newSale);
+
+                search.Number -= quantity;
+
+                Console.WriteLine(newSaleItem.Id);
             }
-
-            var search = Products.FirstOrDefault(x => x.Id == id);
-
-            if (search == null)
+            else
             {
-                Console.WriteLine("There is no product");
+                foreach (var item in Products)
+                {
+                    if (quantity > item.Number)
+                    {
+                        throw new Exception("No product");
+                    }
+                    item.Number -= quantity;
+                }
+                foreach (var item in Sales)
+                {
+                    foreach (var items in SalesItems)
+                    {
+                        item.Price += items.Product.Price * quantity;
+                    }
+                }
             }
-
-            var newSaleItem = new SaleItem
-            {
-                Number = search.Number - quantity,
-
-                Product = search
-            };
-
-            newSaleItem.Number = quantity;
-
-            if (search.Number <= 0)
-            {
-                Console.WriteLine("Wrong!");
-            }
-
-            var newSale = new Sale
-            {
-                Price = quantity * newSaleItem.Product.Price,
-
-                Date = DateTime.Now.Date
-            };
-
-            SalesItems.Add(newSaleItem);
-
-            Sales.Add(newSale);
-
-            if (quantity > search.Number)
-            {
-                Console.WriteLine("Stock number is less than number");
-            }
-
-            search.Number -= quantity;
-
-            return newSaleItem.Id;
         }
         public void RemoveProductFromSale(string name, int quantity)
         {
