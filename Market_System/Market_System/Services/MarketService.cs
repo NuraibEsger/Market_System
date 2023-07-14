@@ -226,6 +226,13 @@ namespace Market_System.Services
 
             Sales.Add(newSale);
 
+            search.Number -= quantity;
+
+            if (quantity > search.Number)
+            {
+                Console.WriteLine("Stock number is less than number");
+            }
+
             return newSaleItem.Id;
         }
         public void RemoveProductFromSale(int productId, string name)
