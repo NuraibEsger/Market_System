@@ -13,6 +13,7 @@ using static System.Runtime.InteropServices.JavaScript.JSType;
 using System.Diagnostics;
 using System.Security.Cryptography.X509Certificates;
 using System.Collections.Immutable;
+using System.Collections;
 
 namespace Market_System.Services
 {
@@ -204,80 +205,50 @@ namespace Market_System.Services
         {
             return Sales;
         }
-        public void AddSale(int id, int quantity)
+        public int AddSale(int id, int quantity, int num)
         {
-            var res = SalesItems.Find(x => x.Id == id);
+            var search = Products.FirstOrDefault(x => x.Id == id);
 
-            if (res == null)
+            if (id < 0)
             {
-                if (id < 0)
-                {
-                    Console.WriteLine("Product's id is less than 0");
-                }
-
-                var search = Products.FirstOrDefault(x => x.Id == id);
-
-                if (search == null)
-                {
-                    Console.WriteLine("There is no product");
-                }
-
-                if (quantity > search.Number)
-                {
-                    throw new Exception("Stock is less than 0");
-                }
-
-                var newSaleItem = new SaleItem
-                {
-                    Number = search.Number - quantity,
-
-                    Product = search
-                };
-
-                newSaleItem.Number = quantity;
-
-                if (search.Number <= 0)
-                {
-                    Console.WriteLine("Wrong!");
-                }
-
-                var newSale = new Sale
-                {
-                    Price = quantity * newSaleItem.Product.Price,
-
-                    Date = DateTime.Now.Date
-                };
-
-                SalesItems.Add(newSaleItem);
-
-                Sales.Add(newSale);
-
-                search.Number -= quantity;
-
-                Console.WriteLine(newSaleItem.Id);
+                Console.WriteLine("Product's id is less than 0");
             }
-            else
+
+            if (search == null)
             {
-                foreach (var item in Products)
-                {
-                    if (quantity > item.Number)
-                    {
-                        throw new Exception("No product");
-                    }
-                    item.Number -= quantity;
-                }
-                foreach (var item in Sales)
-                {
-                    foreach (var items in SalesItems)
-                    {
-                        item.Price += items.Product.Price * quantity;
-                    }
-                }
+                Console.WriteLine("There is no product");
             }
+
+            if (quantity > search.Number)
+            {
+                throw new Exception("Stock is less than 0");
+            }
+
+            var newSaleItem = new SaleItem
+            {
+                Number = search.Number - quantity,
+
+                Product = search
+            };
+
+            SalesItems.Add(newSaleItem);
+
+            var newSale = new Sale()
+            {
+                Price = quantity * SalesItems.Select(x => x.Product.Price).Sum(),
+
+                SaleItem = SalesItems,
+
+                Date = DateTime.Now.Date
+            };
+
+            Sales.Add(newSale);
+
+            return newSale.Id;
         }
-        public void RemoveProductFromSale(string name, int quantity)
+        public void RemoveProductFromSale(int id, int quantity)
         {
-            var saleItem = SalesItems.FirstOrDefault(item => item.Product.ProductName == name);
+            var saleItem = SalesItems.FirstOrDefault(item => item.Product.Id == id);
 
             if (saleItem != null)
             {
@@ -285,17 +256,16 @@ namespace Market_System.Services
                 {
                     SalesItems.Remove(saleItem);
                 }
-                foreach (var item in Sales)
+                foreach (var item in SalesItems)
                 {
-                    item.Price = item.Price - (quantity * saleItem.Product.Price);
-
-                    if (item.Price <= 0)
+                    if (item.Number < quantity)
                     {
-                        Console.WriteLine("Saleitem is empty");
-
-                        return;
+                        throw new Exception("Stock is less than 0");
                     }
+
+                    Sales.Sum(x => x.Price = x.Price - quantity * saleItem.Product.Price);
                 }
+
                 saleItem.Product.Number += quantity;
             }
         }

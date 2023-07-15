@@ -189,15 +189,26 @@ namespace Market_System.Services
         {
             try
             {
-                Console.WriteLine("Write product's id");
+                Console.WriteLine("Write saleitem's number");
 
-                int id = int.Parse(Console.ReadLine());
+                int num = int.Parse(Console.ReadLine());
 
-                Console.WriteLine("Write product's number");
+                for (int i = 0; i < num; i++)
+                {
+                    Console.WriteLine("Write product's id");
 
-                int number = int.Parse(Console.ReadLine());
+                    int id = int.Parse(Console.ReadLine());
 
-                marketService.AddSale(id, number);
+                    Console.WriteLine("Write product's number");
+
+                    int number = int.Parse(Console.ReadLine());
+
+                    if (i == 0)
+                    {
+                        marketService.AddSale(id, number, num);
+                    }
+                }
+
             }
             catch (Exception ex)
             {
@@ -208,15 +219,24 @@ namespace Market_System.Services
         {
             try
             {
-                Console.WriteLine("Write product's name");
+                Console.WriteLine("Write product's id");
 
-                string name = Console.ReadLine();
+                var table = new ConsoleTable("Id", "Product's name");
+
+                var products = marketService.ShowAllProducts();
+
+                foreach (var item in products)
+                {
+                    table.AddRow(item.Id, item.ProductName);
+                }
+
+                int id = int.Parse(Console.ReadLine());
 
                 Console.WriteLine("Write product's number");
 
                 int number = int.Parse(Console.ReadLine());
 
-                marketService.RemoveProductFromSale(name, number);
+                marketService.RemoveProductFromSale(id, number);
             }
             catch (Exception ex)
             {
@@ -227,7 +247,7 @@ namespace Market_System.Services
         {
             try
             {
-                Console.WriteLine("Write product's number");
+                Console.WriteLine("Write sale's number");
 
                 int number = int.Parse(Console.ReadLine());
 
@@ -254,21 +274,21 @@ namespace Market_System.Services
 
                 var res = sales.GroupBy(x => x.Id).Select(y => y.First()).ToList();
 
-                var table = new ConsoleTable("Sale's date", "Saleitem's id", "Saleitem's price", "Saleitem's name", "Product's stock");
-
                 foreach (var item in sales)
                 {
+                    var table = new ConsoleTable($"Sale's id : {item.Id}", "Sale's date", "Saleitem's id", "Saleitem's price", "Saleitem's name", "Product's stock");
+
                     foreach (var saleItem in MarketService.SalesItems)
                     {
                         if (item.Id == saleItem.Id)
                         {
-                            table.AddRow(item.Date, saleItem.Id, item.Price, 
+                            table.AddRow(" ", item.Date, saleItem.Id, item.Price,
                                 saleItem.Product.ProductName, saleItem.Product.Number);
                         }
                     }
-                }
 
-                table.Write();
+                    table.Write();
+                }
             }
             catch (Exception ex)
             {
@@ -336,10 +356,6 @@ namespace Market_System.Services
                 Console.WriteLine("Write product's number");
 
                 int number = int.Parse(Console.ReadLine());
-
-                Console.WriteLine("Write product's name");
-
-                string name = Console.ReadLine();
 
                 marketService.DisplaySalesOnTheGivenNumber(number);
             }
