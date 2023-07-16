@@ -13,9 +13,9 @@ namespace Market_System.Entites.Entity
         private static int counter;
         public Sale()
         {
+            //For increase the Sale's Id
             Id = counter;
             counter++;
-            SaleItem = new();
         }
         public DateTime Date { get; set; }
         public decimal Price { get; set; }

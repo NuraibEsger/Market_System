@@ -9,10 +9,11 @@ namespace Market_System.Interface
 {
     public interface IMarketable
     {
+
         #region Product
 
         public  List<Product> ShowAllProducts();
-        public void AddProduct(string name, decimal price, int number, string category);
+        public int AddProduct(string name, decimal price, int number, string category);
         public void UpdateProduct(int productId, string name, int number, decimal price, string category);
         public void RemoveProduct(int id);
         public void ShowProductByCategory(string category);
@@ -33,7 +34,6 @@ namespace Market_System.Interface
         public void DisplaySalesOnTheGivenNumber(int id);
 
         #endregion
-
 
     }
 }

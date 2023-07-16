@@ -11,5 +11,7 @@ namespace Market_System.Entites.Enums
         Fruit,
         Vegetable,
         Drink,
+        Meat,
+        Dairy,
     }
 }

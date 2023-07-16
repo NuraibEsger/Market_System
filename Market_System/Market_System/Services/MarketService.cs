@@ -38,61 +38,68 @@ namespace Market_System.Services
         {
             return Products;
         }
-        public void AddProduct(string Name, decimal Price, int Number, string Category)
+        public int AddProduct(string Name, decimal Price, int Number, string Category)
         {
+            ///<summary>
+            ///Sum same produt's name number.
+            /// </summary>
             var res = Products.Find(x => x.ProductName == Name && x.Price == Price);
 
-            if (res == null)
-            {
-                if (string.IsNullOrWhiteSpace(Name))
-                {
-                    throw new FormatException("product's name is empty!");
-                }
-                if (Price < 0)
-                {
-                    throw new FormatException("Price is less than zero");
-                }
-                if (Number <= 0)
-                {
-                    throw new FormatException("Number is equal or lower than 0");
-                }
-                if (string.IsNullOrWhiteSpace(Category))
-                {
-                    throw new FormatException("Category is empty!");
-                }
-
-                bool isSuccessful = Enum.TryParse(typeof(Category), Category, true, out object parsedCategory);
-
-                if (!isSuccessful)
-                {
-                    throw new FormatException("Category not found");
-                }
-
-                var newProduct = new Product
-                {
-                    ProductName = Name,
-                    Price = Price,
-                    Number = Number,
-                    Category = (Category)parsedCategory,
-                };
-
-                if (newProduct.Number < 0)
-                {
-                    throw new Exception("empty");
-                }
-
-                Products.Add(newProduct);
-
-                Console.WriteLine(newProduct.Id);
-            }
-            else
+            //Sum numbers of same produt
+            if (res != null)
             {
                 res.Number += Number;
             }
 
+            if (string.IsNullOrWhiteSpace(Name))
+            {
+                throw new FormatException("product's name is empty!");
+            }
+
+            if (Price <= 0)
+            {
+                throw new FormatException("Price is less than zero");
+            }
+
+            if (Number <= 0)
+            {
+                throw new FormatException("Number is equal or lower than 0");
+            }
+
+            if (string.IsNullOrWhiteSpace(Category))
+            {
+                throw new FormatException("Category is empty!");
+            }
+            //Covnvert to category to bool.
+            bool isSuccessful = Enum.TryParse(typeof(Category), Category, true, out object parsedCategory);
+
+            if (!isSuccessful)
+            {
+                throw new FormatException("Category not found");
+            }
+
+            var newProduct = new Product
+            {
+                ProductName = Name,
+                Price = Price,
+                Number = Number,
+                Category = (Category)parsedCategory,
+            };
+
+            if (newProduct.Number < 0)
+            {
+                throw new Exception("empty");
+            }
+
+            Products.Add(newProduct);
+
+            return newProduct.Id;
         }
         public void UpdateProduct(int productId, string name, int number, decimal price, string category)
         {
+            ///<summary>
+            ///Uptade Product's name, number, price, category by id.
+            /// </summary>
             var res = Products.FirstOrDefault(x => x.Id == productId);
 
             if (name is null)
@@ -132,6 +139,9 @@ namespace Market_System.Services
         }
         public void RemoveProduct(int productId)
         {
+            ///<summary>
+            ///Remove Product by id.
+            /// </summary>
             var existingProduct = Products.FirstOrDefault(x => x.Id == productId);
 
             if (existingProduct is null)
@@ -149,14 +159,14 @@ namespace Market_System.Services
                 var search = Products.Where(x => x.Category.ToString().ToLower() == category.ToLower());
 
                 list.AddRange(search);
-
-                var res = list.GroupBy(x => x.ProductName).Select(x => x.First()).ToList();
             }
+
             if (list.Count == 0)
             {
                 Console.WriteLine("Not find");
                 return;
             }
+            //Prevents dublicats.
             var newRes = list.GroupBy(x => x.ProductName).Select(x => x.First()).ToList();
 
             var table = new ConsoleTable("Id", "Product's name",
@@ -171,6 +181,9 @@ namespace Market_System.Services
         }
         public void ShowProductByPriceRange(decimal startprice, decimal endprice)
         {
+            ///<summary>
+            ///Shows Product's name, price, id, category, number by id.
+            /// </summary>
             var result = Products.Where(x => x.Price >= startprice && x.Price <= endprice).ToList();
 
             if (result.Count > 0)
@@ -192,6 +205,9 @@ namespace Market_System.Services
         }
         public void SearchProductsByName(string productname)
         {
+            ///<summary>
+            ///Shows Products by name.
+            /// </summary>
             var search = Products.Find(x => x.ProductName.ToLower().Trim() == productname.ToLower().Trim());
 
             if (search == null)
@@ -217,17 +233,22 @@ namespace Market_System.Services
         }
         public int AddSale(int num)
         {
+            //Uptades SalesItems.
             SalesItems = new();
-
+            //Add new SalesItems in 1 Sales list.
             for (int i = 0; i < num; i++)
             {
-                Console.WriteLine("Enter product's id");
+            start:
+
+                Console.WriteLine("Enter produt's id");
 
                 int id = int.Parse(Console.ReadLine().Trim());
 
                 Console.WriteLine("Enter saleitem's number");
 
                 int quantity = int.Parse(Console.ReadLine().Trim());
+
+                var res = Products.Find(x => x.Id == id);
 
                 if (id < 0)
                 {
@@ -238,7 +259,8 @@ namespace Market_System.Services
 
                 if (search == null)
                 {
-                    Console.WriteLine("There is no product");
+                    Console.WriteLine("Produt's not found");
+                    goto start;
                 }
 
                 if (quantity > search.Number)
@@ -264,7 +286,7 @@ namespace Market_System.Services
 
                 SalesItems.Add(newSaleItem);
             }
-
+            //Shows Total Sale's price.
             decimal sum = SalesItems.Sum(x => x.Number * x.Product.Price);
 
             var newSale = new Sale
@@ -282,6 +304,9 @@ namespace Market_System.Services
         }
         public void RemoveProductFromSale(int id, int _id, int quantity)
         {
+            ///<summary>
+            ///Remove SalesItems in Sale's list.
+            /// </summary>
             var searchSale = Sales.FirstOrDefault(x => x.Id == id);
 
             if (searchSale == null)
@@ -298,6 +323,8 @@ namespace Market_System.Services
 
             var product = saleItem.Product;
 
+            searchSale.Price -= product.Price * quantity;
+
             if (quantity > saleItem.Number)
             {
                 throw new Exception("Quantity to remove exceeds the available quantity");
@@ -309,6 +336,7 @@ namespace Market_System.Services
 
             saleItem.Number -= quantity;
 
+            //When Saleitem.Number is equal to 0, SaleItem will be removed.
             if (saleItem.Number == 0)
             {
                 searchSale.SaleItem.Remove(saleItem);
@@ -316,6 +344,9 @@ namespace Market_System.Services
         }
         public void RemoveSale(int saleid)
         {
+            ///<summary>
+            ///Remove Sales by id
+            /// </summary>
             var existingSale = Sales.FirstOrDefault(x => x.Id == saleid);
 
             if (existingSale is null)
@@ -327,18 +358,27 @@ namespace Market_System.Services
         }
         public void DisplaySalesByDate(DateTime startdate, DateTime enddate)
         {
+            ///<summary>
+            ///Display all sales by DateRange.
+            /// </summary>
             var result = Sales.FindAll(x => x.Date >= startdate && x.Date <= enddate).ToList();
+
+            if (result.Count == 0)
+            {
+                throw new Exception("Sale's not found");
+            }
 
             if (result.Count > 0)
             {
-                var table = new ConsoleTable("Id", "Sale's price",
-                     "Sale's date");
+                var table = new ConsoleTable("Id", "Sale's price", "Sale's date", 
+                    "Produt's name", "Saleitem's price", "Saleitem's id", "Product's number");
 
                 foreach (var item in result)
                 {
                     foreach (var items in item.SaleItem)
                     {
-                        table.AddRow(item.Id, item.Price, item.Date, items.Product.ProductName, items.Price, items.Id, items.Number);
+                        table.AddRow(item.Id, item.Price, item.Date, 
+                            items.Product.ProductName, items.Price, items.Id, items.Product.Number);
                     }
                 }
 
@@ -351,8 +391,10 @@ namespace Market_System.Services
         }
         public void DisplaySalesByPriceRange(decimal startPrice, decimal endPrice)
         {
+            ///<summary>
+            ///Display all sales by PriceRange.
+            /// </summary>
             var result = Sales.FindAll(x => x.Price >= startPrice && x.Price <= endPrice).ToList();
-
 
             if (result.Count > 0)
             {
@@ -373,20 +415,25 @@ namespace Market_System.Services
         }
         public void DisplaySalesOnTheGivenDate(DateTime date)
         {
-            var result = Sales.FindAll(x => x.Date == date);
+            ///<summary>
+            ///Display Sales on the given date.
+            /// </summary>
+            var result = Sales.Where(x => x.Date.Date == date.Date).ToList();
 
-            if (result == null)
+            if (result.Count == 0)
             {
-                throw new Exception("Sale not find");
+                throw new Exception("Sale's not find");
             }
 
-            var table = new ConsoleTable("Id", "Price", "Date");
+            var table = new ConsoleTable("Id", "Sale's price", "Sale's date",
+                    "Produt's name", "Saleitem's price", "Saleitem's id", "Product's number");
 
             foreach (var item in result)
             {
                 foreach (var items in item.SaleItem)
                 {
-                    table.AddRow(item.Id, item.Price, item.Date, items.Product.ProductName, items.Price, items.Id, items.Number);
+                    table.AddRow(item.Id, item.Price, item.Date,
+                        items.Product.ProductName, items.Price, items.Id, items.Product.Number);
                 }
             }
 
@@ -394,13 +441,16 @@ namespace Market_System.Services
         }
         public void DisplaySalesOnTheGivenNumber(int id)
         {
+            ///<summary>
+            ///Display sales by id.
+            /// </summary>
             var result = Sales.FindAll(x => x.Id == id).ToList();
 
             var table = new ConsoleTable("Sale's id", "Sale' price", "Sale' date", "Prdouct's name", "Saleitem's price", "Saleitem's id", "Saleitem's number");
 
             if (result == null)
             {
-                throw new Exception("Sale item not found");
+                throw new Exception("Saleitem's not found");
             }
 
             foreach (var item in result)

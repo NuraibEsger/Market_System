@@ -28,6 +28,7 @@ namespace Market_System.Services
 
                 string name = Console.ReadLine().Trim();
 
+                //Use for just letter.
                 bool regex = Regex.IsMatch(name, @"^[a-zA-Z]+$");
 
                 if (regex != true)
@@ -45,6 +46,7 @@ namespace Market_System.Services
 
                 Console.WriteLine("Write product's category");
 
+                //Show categories in table.
                 var table = new ConsoleTable("----------");
 
                 foreach (var item in Enum.GetValues(typeof(Category)))
@@ -55,6 +57,7 @@ namespace Market_System.Services
 
                 string category = Console.ReadLine().Trim();
 
+                //Use for just letter.
                 bool regex1 = Regex.IsMatch(category, @"^[a-zA-Z]+$");
 
                 if (regex1 != true)
@@ -86,6 +89,7 @@ namespace Market_System.Services
 
                 string name = Console.ReadLine().Trim();
 
+                //Use for just letter.
                 bool regex = Regex.IsMatch(name, @"^[a-zA-Z]+$");
 
                 if (regex != true)
@@ -176,6 +180,14 @@ namespace Market_System.Services
         {
             try
             {
+                var table = new ConsoleTable("----------");
+
+                foreach (var item in Enum.GetValues(typeof(Category)))
+                {
+                    table.AddRow(item);
+                }
+                table.Write();
+
                 Console.WriteLine("Write category");
 
                 string category = Console.ReadLine().Trim();
@@ -214,6 +226,7 @@ namespace Market_System.Services
 
                 string name = Console.ReadLine().Trim();
 
+                //Use for just letter.
                 bool regex = Regex.IsMatch(name, @"^[a-zA-Z]+$");
 
                 if (regex != true)
@@ -311,6 +324,7 @@ namespace Market_System.Services
 
                 var res = sales.GroupBy(x => x.Id).Select(y => y.First()).ToList();
 
+                //Show in ConsoleTable
                 var table = new ConsoleTable("Sale's id", "Sale's date", "Saleitem's id",
                     "Saleitem's price", "Saleitem's name", "Product's stock");
 
@@ -319,7 +333,6 @@ namespace Market_System.Services
 
                     foreach (var saleItem in item.SaleItem)
                     {
-
                         var product = saleItem.Product;
 
                         table.AddRow(item.Id, item.Date, saleItem.Id, saleItem.Price, product.ProductName, product.Number);
@@ -341,20 +354,22 @@ namespace Market_System.Services
         {
             try
             {
-                Console.WriteLine("Write start date with, (MM/dd/yyyy HH:mm:ss tt) ");
+                Console.WriteLine("Write start date with, (MM/dd/yyyy HH:mm:ss) ");
 
-                DateTime startDate = DateTime.ParseExact(Console.ReadLine().Trim(), "MM/dd/yyyy HH:mm:ss tt", CultureInfo.InvariantCulture);
+                //Input with MM/dd/yyyy HH:mm:ss format.
+                DateTime startDate = DateTime.ParseExact(Console.ReadLine().Trim(), "MM/dd/yyyy HH:mm:ss", CultureInfo.InvariantCulture);
 
                 Console.WriteLine("Write end date wirh, (MM/dd/yyyy HH:mm:ss tt)");
 
-                DateTime endDate = DateTime.ParseExact(Console.ReadLine().Trim(), "MM/dd/yyyy HH:mm:ss tt", CultureInfo.InvariantCulture);
+                //Input with MM/dd/yyyy HH:mm:ss format.
+                DateTime endDate = DateTime.ParseExact(Console.ReadLine().Trim(), "MM/dd/yyyy HH:mm:ss", CultureInfo.InvariantCulture);
 
                 marketService.DisplaySalesByDate(startDate, endDate);
             }
 
             catch (FormatException)
             {
-                Console.WriteLine("Invalid date format. Please use the format (MM/dd/yyyy HH:mm:ss tt)");
+                Console.WriteLine("Invalid date format. Please use the format (MM/dd/yyyy HH:mm:ss)");
             }
 
             catch (Exception ex)
@@ -385,10 +400,11 @@ namespace Market_System.Services
         {
             try
             {
-                Console.WriteLine("Write date with, (MM/dd/yyyy HH:mm:ss tt)");
+                Console.WriteLine("Write date with, (MM/dd/yyyy HH:mm:ss)");
 
+                //Input with MM/dd/yyyy HH:mm:ss format.
                 DateTime date = DateTime.ParseExact(Console.ReadLine().Trim(),
-                    "MM/dd/yyyy HH:mm:ss tt", CultureInfo.InvariantCulture);
+                    "MM/dd/yyyy HH:mm:ss", CultureInfo.InvariantCulture);
 
                 marketService.DisplaySalesOnTheGivenDate(date);
             }

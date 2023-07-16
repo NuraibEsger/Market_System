@@ -13,6 +13,7 @@ namespace Market_System.Entites.Entity
         private static int counter;
         public Product()
         {
+            //For increase the Product's Id
             Id = counter;
             counter++;
         }
