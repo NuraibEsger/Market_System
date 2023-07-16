@@ -110,6 +110,8 @@ namespace Market_System.SubMenu
 
                 Console.WriteLine("8. Display sales on the given number");
 
+                Console.WriteLine("0. Go back");
+
                 Console.WriteLine("-----------");
 
                 Console.WriteLine("Enter option:");

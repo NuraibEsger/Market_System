@@ -19,6 +19,6 @@ namespace Market_System.Entites.Entity
         public string ProductName { get; set; }
         public decimal Price { get; set; }
         public int Number { get; set; }
-        public Category category { get; set; }
+        public Category Category { get; set; }
     }
 }

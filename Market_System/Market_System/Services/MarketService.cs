@@ -14,6 +14,7 @@ using System.Diagnostics;
 using System.Security.Cryptography.X509Certificates;
 using System.Collections.Immutable;
 using System.Collections;
+using System.Transactions;
 
 namespace Market_System.Services
 {
@@ -72,7 +73,7 @@ namespace Market_System.Services
                     ProductName = Name,
                     Price = Price,
                     Number = Number,
-                    category = (Category)parsedCategory,
+                    Category = (Category)parsedCategory,
                 };
 
                 if (newProduct.Number < 0)
@@ -136,7 +137,7 @@ namespace Market_System.Services
 
             foreach (var item in Enum.GetValues(typeof(Category)))
             {
-                var search = Products.Where(x => x.category.ToString().ToLower() == category.ToLower());
+                var search = Products.Where(x => x.Category.ToString().ToLower() == category.ToLower());
 
                 list.AddRange(search);
 
@@ -154,7 +155,7 @@ namespace Market_System.Services
 
             foreach (var item in newRes)
             {
-                table.AddRow(item.Id, item.ProductName, item.Price, item.category, item.Number);
+                table.AddRow(item.Id, item.ProductName, item.Price, item.Category, item.Number);
             }
 
             table.Write();
@@ -170,7 +171,7 @@ namespace Market_System.Services
 
                 foreach (var item in result)
                 {
-                    table.AddRow(item.Id, item.ProductName, item.Price, item.category, item.Number);
+                    table.AddRow(item.Id, item.ProductName, item.Price, item.Category, item.Number);
                 }
 
                 table.Write();
@@ -191,7 +192,7 @@ namespace Market_System.Services
             var table = new ConsoleTable("Id", "Product's name",
                     "Product's price", "Product's category", "Product's number");
 
-            table.AddRow(search.Id, search.ProductName, search.Price, search.category, search.Number);
+            table.AddRow(search.Id, search.ProductName, search.Price, search.Category, search.Number);
 
             table.Write();
 
@@ -205,46 +206,76 @@ namespace Market_System.Services
         {
             return Sales;
         }
-        public int AddSale(int id, int quantity, int num)
+        public void AddSale(int id, int quantity)
         {
-            var search = Products.FirstOrDefault(x => x.Id == id);
+            var res = SalesItems.Find(x => x.Id == id);
 
-            if (id < 0)
+            if (res == null)
             {
-                Console.WriteLine("Product's id is less than 0");
+                if (id < 0)
+                {
+                    Console.WriteLine("Product's id is less than 0");
+                }
+
+                var search = Products.FirstOrDefault(x => x.Id == id);
+
+                if (search == null)
+                {
+                    Console.WriteLine("There is no product");
+                }
+
+                if (quantity > search.Number)
+                {
+                    throw new Exception("Stock is less than 0");
+                }
+
+                var newSaleItem = new SaleItem
+                {
+                    Number = search.Number - quantity,
+
+                    Product = search
+                };
+
+                newSaleItem.Number = quantity;
+
+                if (search.Number <= 0)
+                {
+                    Console.WriteLine("Wrong!");
+                }
+
+                var newSale = new Sale
+                {
+                    Price = quantity * newSaleItem.Product.Price,
+
+                    Date = DateTime.Now
+                };
+
+                SalesItems.Add(newSaleItem);
+
+                Sales.Add(newSale);
+
+                search.Number -= quantity;
+
+                Console.WriteLine(newSaleItem.Id);
             }
-
-            if (search == null)
+            else
             {
-                Console.WriteLine("There is no product");
+                foreach (var item in Products)
+                {
+                    if (quantity > item.Number)
+                    {
+                        throw new Exception("No product");
+                    }
+                    item.Number -= quantity;
+                }
+                foreach (var item in Sales)
+                {
+                    foreach (var items in SalesItems)
+                    {
+                        item.Price += items.Product.Price * quantity;
+                    }
+                }
             }
-
-            if (quantity > search.Number)
-            {
-                throw new Exception("Stock is less than 0");
-            }
-
-            var newSaleItem = new SaleItem
-            {
-                Number = search.Number - quantity,
-
-                Product = search
-            };
-
-            SalesItems.Add(newSaleItem);
-
-            var newSale = new Sale()
-            {
-                Price = quantity * SalesItems.Select(x => x.Product.Price).Sum(),
-
-                SaleItem = SalesItems,
-
-                Date = DateTime.Now.Date
-            };
-
-            Sales.Add(newSale);
-
-            return newSale.Id;
         }
         public void RemoveProductFromSale(int id, int quantity)
         {
@@ -327,27 +358,27 @@ namespace Market_System.Services
         {
             var result = Sales.FindAll(x => x.Date == date);
 
-            foreach (var item in result)
-            {
-                var table = new ConsoleTable("Id", "Price", "Date");
-
-                table.AddRow(item.Id, item.Price, item.Date);
-
-                table.Write();
-            }
-
             if (result == null)
             {
                 throw new Exception("Sale didn't find");
             }
+
+            var table = new ConsoleTable("Id", "Price", "Date");
+
+            foreach (var item in result)
+            {
+                table.AddRow(item.Id, item.Price, item.Date);
+            }
+
+            table.Write();
         }
         public void DisplaySalesOnTheGivenNumber(int id)
         {
-            var result = Sales.FindAll(x => x.Id == id).ToList();
+            var result = SalesItems.FindAll(x => x.Id == id).ToList();
 
             var table = new ConsoleTable("Id", "Price", "Date", "Name");
 
-            foreach (var item in result)
+            foreach (var item in Sales)
             {
                 foreach (var items in SalesItems)
                 {

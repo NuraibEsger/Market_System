@@ -8,6 +8,7 @@ using System.Globalization;
 using System.Linq;
 using System.Security.Cryptography.X509Certificates;
 using System.Text;
+using System.Text.RegularExpressions;
 using System.Threading.Tasks;
 using System.Xml.Linq;
 
@@ -25,15 +26,22 @@ namespace Market_System.Services
             {
                 Console.WriteLine("Write product's name");
 
-                string name = Console.ReadLine();
+                string name = Console.ReadLine().Trim();
+
+                bool regex = Regex.IsMatch(name, @"^[a-zA-Z]+$");
+
+                if (regex != true)
+                {
+                    throw new Exception("Enter only letter!");
+                }
 
                 Console.WriteLine("Write product's price");
 
-                decimal price = decimal.Parse(Console.ReadLine());
+                decimal price = decimal.Parse(Console.ReadLine().Trim());
 
                 Console.WriteLine("Write product's number");
 
-                int number = int.Parse(Console.ReadLine());
+                int number = int.Parse(Console.ReadLine().Trim());
 
                 Console.WriteLine("Write product's category");
 
@@ -45,7 +53,14 @@ namespace Market_System.Services
                 }
                 table.Write();
 
-                string category = Console.ReadLine();
+                string category = Console.ReadLine().Trim();
+
+                bool regex1 = Regex.IsMatch(category, @"^[a-zA-Z]+$");
+
+                if (regex1 != true)
+                {
+                    throw new Exception("Enter only letter!");
+                }
 
                 marketService.AddProduct(name, price, number, category);
 
@@ -65,19 +80,26 @@ namespace Market_System.Services
             {
                 Console.WriteLine("Write product's id");
 
-                int id = int.Parse(Console.ReadLine());
+                int id = int.Parse(Console.ReadLine().Trim());
 
                 Console.WriteLine("Write product's name");
 
-                string name = Console.ReadLine();
+                string name = Console.ReadLine().Trim();
+
+                bool regex = Regex.IsMatch(name, @"^[a-zA-Z]+$");
+
+                if (regex != true)
+                {
+                    throw new Exception("Enter only letter!");
+                }
 
                 Console.WriteLine("Write product's number");
 
-                int number = int.Parse(Console.ReadLine());
+                int number = int.Parse(Console.ReadLine().Trim());
 
                 Console.WriteLine("Write product's price");
 
-                decimal price = decimal.Parse(Console.ReadLine());
+                decimal price = decimal.Parse(Console.ReadLine().Trim());
 
                 marketService.UpdateProduct(id, name, number, price);
             }
@@ -120,7 +142,7 @@ namespace Market_System.Services
                 foreach (var item in products)
                 {
                     table.AddRow(item.Id, item.ProductName,
-                        item.Price, item.category, item.Number);
+                        item.Price, item.Category, item.Number);
                 }
 
                 table.Write();
@@ -137,7 +159,7 @@ namespace Market_System.Services
             {
                 Console.WriteLine("Write category");
 
-                string category = Console.ReadLine();
+                string category = Console.ReadLine().Trim();
 
                 marketService.ShowProductByCategory(category);
             }
@@ -152,11 +174,11 @@ namespace Market_System.Services
             {
                 Console.WriteLine("Write start amount");
 
-                decimal startAmount = decimal.Parse(Console.ReadLine());
+                decimal startAmount = decimal.Parse(Console.ReadLine().Trim());
 
                 Console.WriteLine("Write end amount");
 
-                decimal endAmount = decimal.Parse(Console.ReadLine());
+                decimal endAmount = decimal.Parse(Console.ReadLine().Trim());
 
                 marketService.ShowProductByPriceRange(startAmount, endAmount);
             }
@@ -171,7 +193,14 @@ namespace Market_System.Services
             {
                 Console.WriteLine("Write product's name");
 
-                string name = Console.ReadLine();
+                string name = Console.ReadLine().Trim();
+
+                bool regex = Regex.IsMatch(name, @"^[a-zA-Z]+$");
+
+                if (regex != true)
+                {
+                    throw new Exception("Enter only letter!");
+                }
 
                 marketService.SearchProductsByName(name);
             }
@@ -189,26 +218,15 @@ namespace Market_System.Services
         {
             try
             {
-                Console.WriteLine("Write saleitem's number");
+                Console.WriteLine("Write product's id");
 
-                int num = int.Parse(Console.ReadLine());
+                int id = int.Parse(Console.ReadLine());
 
-                for (int i = 0; i < num; i++)
-                {
-                    Console.WriteLine("Write product's id");
+                Console.WriteLine("Write product's number");
 
-                    int id = int.Parse(Console.ReadLine());
+                int number = int.Parse(Console.ReadLine());
 
-                    Console.WriteLine("Write product's number");
-
-                    int number = int.Parse(Console.ReadLine());
-
-                    if (i == 0)
-                    {
-                        marketService.AddSale(id, number, num);
-                    }
-                }
-
+                marketService.AddSale(id, number);
             }
             catch (Exception ex)
             {
@@ -230,11 +248,11 @@ namespace Market_System.Services
                     table.AddRow(item.Id, item.ProductName);
                 }
 
-                int id = int.Parse(Console.ReadLine());
+                int id = int.Parse(Console.ReadLine().Trim());
 
                 Console.WriteLine("Write product's number");
 
-                int number = int.Parse(Console.ReadLine());
+                int number = int.Parse(Console.ReadLine().Trim());
 
                 marketService.RemoveProductFromSale(id, number);
             }
@@ -249,7 +267,7 @@ namespace Market_System.Services
             {
                 Console.WriteLine("Write sale's number");
 
-                int number = int.Parse(Console.ReadLine());
+                int number = int.Parse(Console.ReadLine().Trim());
 
                 marketService.RemoveSale(number);
             }
@@ -274,21 +292,21 @@ namespace Market_System.Services
 
                 var res = sales.GroupBy(x => x.Id).Select(y => y.First()).ToList();
 
+                var table = new ConsoleTable("Sale's date", "Saleitem's id", "Saleitem's price", "Saleitem's name", "Product's stock");
+
                 foreach (var item in sales)
                 {
-                    var table = new ConsoleTable($"Sale's id : {item.Id}", "Sale's date", "Saleitem's id", "Saleitem's price", "Saleitem's name", "Product's stock");
-
                     foreach (var saleItem in MarketService.SalesItems)
                     {
                         if (item.Id == saleItem.Id)
                         {
-                            table.AddRow(" ", item.Date, saleItem.Id, item.Price,
+                            table.AddRow(item.Date, saleItem.Id, item.Price,
                                 saleItem.Product.ProductName, saleItem.Product.Number);
                         }
                     }
-
-                    table.Write();
                 }
+
+                table.Write();
             }
             catch (Exception ex)
             {
@@ -299,13 +317,13 @@ namespace Market_System.Services
         {
             try
             {
-                Console.WriteLine("Write start date with, (MM/dd/yyyy) ");
+                Console.WriteLine("Write start date with, (MM/dd/yyyy HH:mm:ss) ");
 
-                DateTime startDate = DateTime.ParseExact(Console.ReadLine(), "MM/dd/yyyy", CultureInfo.InvariantCulture);
+                DateTime startDate = DateTime.ParseExact(Console.ReadLine().Trim(), "MM/dd/yyyy HH:mm:ss", CultureInfo.InvariantCulture);
 
-                Console.WriteLine("Write end date wirh, (MM/dd/yyyy)");
+                Console.WriteLine("Write end date wirh, (MM/dd/yyyy HH:mm:ss)");
 
-                DateTime endDate = DateTime.ParseExact(Console.ReadLine(), "MM/dd/yyyy", CultureInfo.InvariantCulture);
+                DateTime endDate = DateTime.ParseExact(Console.ReadLine().Trim(), "MM/dd/yyyy HH:mm:ss", CultureInfo.InvariantCulture);
 
                 marketService.DisplaySalesByDate(startDate, endDate);
             }
@@ -320,11 +338,11 @@ namespace Market_System.Services
             {
                 Console.WriteLine("Write start price");
 
-                decimal startPrice = decimal.Parse(Console.ReadLine());
+                decimal startPrice = decimal.Parse(Console.ReadLine().Trim());
 
                 Console.WriteLine("Write end price");
 
-                decimal endPrice = decimal.Parse(Console.ReadLine());
+                decimal endPrice = decimal.Parse(Console.ReadLine().Trim());
 
                 marketService.DisplaySalesByPriceRange(startPrice, endPrice);
             }
@@ -337,10 +355,10 @@ namespace Market_System.Services
         {
             try
             {
-                Console.WriteLine("Write date with, (MM/dd/yyyy)");
+                Console.WriteLine("Write date with, (MM/dd/yyyy HH:mm:ss)");
 
-                DateTime date = DateTime.ParseExact(Console.ReadLine(),
-                    "MM/dd/yyyy", CultureInfo.InvariantCulture);
+                DateTime date = DateTime.ParseExact(Console.ReadLine().Trim(),
+                    "MM/dd/yyyy HH:mm:ss", CultureInfo.InvariantCulture);
 
                 marketService.DisplaySalesOnTheGivenDate(date);
             }
@@ -355,7 +373,7 @@ namespace Market_System.Services
             {
                 Console.WriteLine("Write product's number");
 
-                int number = int.Parse(Console.ReadLine());
+                int number = int.Parse(Console.ReadLine().Trim());
 
                 marketService.DisplaySalesOnTheGivenNumber(number);
             }

@@ -24,7 +24,7 @@ namespace Market_System.Interface
         #region Sale
 
         public List<Sale> ShowAllSales();
-        public int AddSale(int id, int quantity, int num);
+        public void AddSale(int id, int quantity);
         public void RemoveProductFromSale(int id, int quantity);
         public void RemoveSale(int saleid);
         public void DisplaySalesByDate(DateTime startdate, DateTime enddate);

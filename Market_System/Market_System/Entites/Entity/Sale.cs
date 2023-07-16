@@ -15,6 +15,7 @@ namespace Market_System.Entites.Entity
         {
             Id = counter;
             counter++;
+            SaleItem = new();
         }
         public DateTime Date { get; set; }
         public decimal Price { get; set; }
