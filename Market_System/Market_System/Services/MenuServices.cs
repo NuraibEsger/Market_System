@@ -237,15 +237,11 @@ namespace Market_System.Services
         {
             try
             {
-                Console.WriteLine("Write product's id");
+                Console.WriteLine("Write saleitem's number");
 
-                int id = int.Parse(Console.ReadLine());
+                int num = int.Parse(Console.ReadLine());
 
-                Console.WriteLine("Write product's number");
-
-                int number = int.Parse(Console.ReadLine());
-
-                marketService.AddSale(id, number);
+                marketService.AddSale(num);
             }
             catch (Exception ex)
             {
@@ -256,7 +252,17 @@ namespace Market_System.Services
         {
             try
             {
+                Console.WriteLine("Enter sale's id");
+
+                int id = int.Parse(Console.ReadLine().Trim());
+
                 Console.WriteLine("Write product's id");
+
+                int _id = int.Parse(Console.ReadLine().Trim());
+
+                Console.WriteLine("Write product's number");
+
+                int number = int.Parse(Console.ReadLine().Trim());
 
                 var table = new ConsoleTable("Id", "Product's name");
 
@@ -267,13 +273,7 @@ namespace Market_System.Services
                     table.AddRow(item.Id, item.ProductName);
                 }
 
-                int id = int.Parse(Console.ReadLine().Trim());
-
-                Console.WriteLine("Write product's number");
-
-                int number = int.Parse(Console.ReadLine().Trim());
-
-                marketService.RemoveProductFromSale(id, number);
+                marketService.RemoveProductFromSale(id, _id, number);
             }
             catch (Exception ex)
             {
@@ -311,19 +311,24 @@ namespace Market_System.Services
 
                 var res = sales.GroupBy(x => x.Id).Select(y => y.First()).ToList();
 
-                var table = new ConsoleTable("Sale's date", "Saleitem's id", "Saleitem's price", "Saleitem's name", "Product's stock");
+                var table = new ConsoleTable("Sale's id", "Sale's date", "Saleitem's id",
+                    "Saleitem's price", "Saleitem's name", "Product's stock");
 
                 foreach (var item in sales)
                 {
-                    foreach (var saleItem in MarketService.SalesItems)
+
+                    foreach (var saleItem in item.SaleItem)
                     {
-                        if (item.Id == saleItem.Id)
-                        {
-                            table.AddRow(item.Date, saleItem.Id, item.Price,
-                                saleItem.Product.ProductName, saleItem.Product.Number);
-                        }
+
+                        var product = saleItem.Product;
+
+                        table.AddRow(item.Id, item.Date, saleItem.Id, saleItem.Price, product.ProductName, product.Number);
                     }
+
+                    Console.WriteLine($"Total Price for Sale' id:{item.Id} | {item.Price}");
                 }
+
+                Console.WriteLine();
 
                 table.Write();
             }
@@ -336,16 +341,22 @@ namespace Market_System.Services
         {
             try
             {
-                Console.WriteLine("Write start date with, (MM/dd/yyyy HH:mm:ss) ");
+                Console.WriteLine("Write start date with, (MM/dd/yyyy HH:mm:ss tt) ");
 
-                DateTime startDate = DateTime.ParseExact(Console.ReadLine().Trim(), "MM/dd/yyyy HH:mm:ss", CultureInfo.InvariantCulture);
+                DateTime startDate = DateTime.ParseExact(Console.ReadLine().Trim(), "MM/dd/yyyy HH:mm:ss tt", CultureInfo.InvariantCulture);
 
-                Console.WriteLine("Write end date wirh, (MM/dd/yyyy HH:mm:ss)");
+                Console.WriteLine("Write end date wirh, (MM/dd/yyyy HH:mm:ss tt)");
 
-                DateTime endDate = DateTime.ParseExact(Console.ReadLine().Trim(), "MM/dd/yyyy HH:mm:ss", CultureInfo.InvariantCulture);
+                DateTime endDate = DateTime.ParseExact(Console.ReadLine().Trim(), "MM/dd/yyyy HH:mm:ss tt", CultureInfo.InvariantCulture);
 
                 marketService.DisplaySalesByDate(startDate, endDate);
             }
+
+            catch (FormatException)
+            {
+                Console.WriteLine("Invalid date format. Please use the format (MM/dd/yyyy HH:mm:ss tt)");
+            }
+
             catch (Exception ex)
             {
                 Console.WriteLine(ex.Message);
@@ -374,10 +385,10 @@ namespace Market_System.Services
         {
             try
             {
-                Console.WriteLine("Write date with, (MM/dd/yyyy HH:mm:ss)");
+                Console.WriteLine("Write date with, (MM/dd/yyyy HH:mm:ss tt)");
 
                 DateTime date = DateTime.ParseExact(Console.ReadLine().Trim(),
-                    "MM/dd/yyyy HH:mm:ss", CultureInfo.InvariantCulture);
+                    "MM/dd/yyyy HH:mm:ss tt", CultureInfo.InvariantCulture);
 
                 marketService.DisplaySalesOnTheGivenDate(date);
             }
