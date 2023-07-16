@@ -97,14 +97,6 @@ namespace Market_System.Services
                     throw new Exception("Enter only letter!");
                 }
 
-                var table = new ConsoleTable("----------");
-
-                foreach (var item in Enum.GetValues(typeof(Category)))
-                {
-                    table.AddRow(item);
-                }
-                table.Write();
-
                 Console.WriteLine("Write product's number");
 
                 int number = int.Parse(Console.ReadLine().Trim());
@@ -112,6 +104,14 @@ namespace Market_System.Services
                 Console.WriteLine("Write product's price");
 
                 decimal price = decimal.Parse(Console.ReadLine().Trim());
+
+                var table = new ConsoleTable("----------");
+
+                foreach (var item in Enum.GetValues(typeof(Category)))
+                {
+                    table.AddRow(item);
+                }
+                table.Write();
 
                 Console.WriteLine("Write product's category");
 
@@ -403,7 +403,7 @@ namespace Market_System.Services
                 Console.WriteLine("Write date with, (MM/dd/yyyy HH:mm:ss)");
 
                 //Input with MM/dd/yyyy HH:mm:ss format.
-                DateTime date = DateTime.ParseExact(Console.ReadLine().Trim(),
+                DateTime date = DateTime.ParseExact(Console.ReadLine(),
                     "MM/dd/yyyy HH:mm:ss", CultureInfo.InvariantCulture);
 
                 marketService.DisplaySalesOnTheGivenDate(date);
@@ -417,7 +417,7 @@ namespace Market_System.Services
         {
             try
             {
-                Console.WriteLine("Write product's number");
+                Console.WriteLine("Write sale's number");
 
                 int number = int.Parse(Console.ReadLine().Trim());
 

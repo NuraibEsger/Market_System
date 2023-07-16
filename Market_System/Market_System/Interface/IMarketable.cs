@@ -13,7 +13,7 @@ namespace Market_System.Interface
         #region Product
 
         public  List<Product> ShowAllProducts();
-        public int AddProduct(string name, decimal price, int number, string category);
+        public void AddProduct(string name, decimal price, int number, string category);
         public void UpdateProduct(int productId, string name, int number, decimal price, string category);
         public void RemoveProduct(int id);
         public void ShowProductByCategory(string category);
