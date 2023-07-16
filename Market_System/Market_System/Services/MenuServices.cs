@@ -93,6 +93,14 @@ namespace Market_System.Services
                     throw new Exception("Enter only letter!");
                 }
 
+                var table = new ConsoleTable("----------");
+
+                foreach (var item in Enum.GetValues(typeof(Category)))
+                {
+                    table.AddRow(item);
+                }
+                table.Write();
+
                 Console.WriteLine("Write product's number");
 
                 int number = int.Parse(Console.ReadLine().Trim());
@@ -101,7 +109,18 @@ namespace Market_System.Services
 
                 decimal price = decimal.Parse(Console.ReadLine().Trim());
 
-                marketService.UpdateProduct(id, name, number, price);
+                Console.WriteLine("Write product's category");
+
+                string category = Console.ReadLine();
+
+                bool regex1 = Regex.IsMatch(category, @"^[a-zA-Z]+$");
+
+                if (regex1 != true)
+                {
+                    throw new Exception("Enter only letter!");
+                }
+
+                marketService.UpdateProduct(id, name, number, price, category);
             }
             catch (Exception ex)
             {

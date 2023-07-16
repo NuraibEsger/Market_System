@@ -91,7 +91,7 @@ namespace Market_System.Services
             }
 
         }
-        public void UpdateProduct(int productId, string name, int number, decimal price)
+        public void UpdateProduct(int productId, string name, int number, decimal price, string category)
         {
             var res = Products.FirstOrDefault(x => x.Id == productId);
 
@@ -114,6 +114,15 @@ namespace Market_System.Services
             {
                 Console.WriteLine($"Product with ID: {productId} not found");
             }
+
+            bool isSuccessful = Enum.TryParse(typeof(Category), category, true, out object parsedCategory);
+
+            if (isSuccessful != true)
+            {
+                throw new FormatException("Category not found");
+            }
+
+            res.Category = (Category)parsedCategory;
 
             res.ProductName = name;
 
