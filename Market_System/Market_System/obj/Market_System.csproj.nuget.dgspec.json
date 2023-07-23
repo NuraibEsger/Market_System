@@ -43,6 +43,10 @@
             "ConsoleTables": {
               "target": "Package",
               "version": "[2.4.2, )"
+            },
+            "System.Console": {
+              "target": "Package",
+              "version": "[4.3.1, )"
             }
           },
           "imports": [

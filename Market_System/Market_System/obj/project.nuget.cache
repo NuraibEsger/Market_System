@@ -1,12 +1,13 @@
 {
   "version": 2,
-  "dgSpecHash": "nUarMSVclxqVD+k4nH2KnmH+PhiSdRKiKQcDLwGYM+90YanY5QT1YbZWynG1ATD74nVUuqvzZy9TgBxE3wECsw==",
+  "dgSpecHash": "Ok1IZDfY0fNBMaIowo9u08CldAbH+TrBMJAZYQ1scww7eYCPqhjoZAmNuzmSaVf3geJv4Dd00++hG4QYysLqVA==",
   "success": true,
   "projectFilePath": "C:\\Users\\BAKU\\Desktop\\Projects\\Market_System\\Market_System\\Market_System.csproj",
   "expectedPackageFiles": [
     "C:\\Users\\BAKU\\.nuget\\packages\\consoletables\\2.4.2\\consoletables.2.4.2.nupkg.sha512",
     "C:\\Users\\BAKU\\.nuget\\packages\\microsoft.netcore.platforms\\1.1.0\\microsoft.netcore.platforms.1.1.0.nupkg.sha512",
-    "C:\\Users\\BAKU\\.nuget\\packages\\microsoft.netcore.targets\\1.1.0\\microsoft.netcore.targets.1.1.0.nupkg.sha512",
+    "C:\\Users\\BAKU\\.nuget\\packages\\microsoft.netcore.targets\\1.1.2\\microsoft.netcore.targets.1.1.2.nupkg.sha512",
+    "C:\\Users\\BAKU\\.nuget\\packages\\system.console\\4.3.1\\system.console.4.3.1.nupkg.sha512",
     "C:\\Users\\BAKU\\.nuget\\packages\\system.io\\4.3.0\\system.io.4.3.0.nupkg.sha512",
     "C:\\Users\\BAKU\\.nuget\\packages\\system.reflection\\4.3.0\\system.reflection.4.3.0.nupkg.sha512",
     "C:\\Users\\BAKU\\.nuget\\packages\\system.reflection.primitives\\4.3.0\\system.reflection.primitives.4.3.0.nupkg.sha512",
